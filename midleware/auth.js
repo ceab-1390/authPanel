@@ -19,13 +19,27 @@ module.exports.loguedIn = async (req,res,next) => {
     }
     try {
         const decoded = jwt.verify(token, process.env.SECRET);
-        const validUser = await User.findOne(decoded.user)
-        if (validUser.id === decoded.id){
-            req.user = decoded;
-            next();
-        }else{
-            return res.status(401).redirect('/')
+        const validUser = await User.findOne(decoded.user);
+        switch(validUser.provider){
+            case 'local':
+                if (validUser.id === decoded.id){
+                    req.user = decoded.user;
+                    next();
+                }else{
+                    return res.status(401).redirect('/')
+                }
+            break;
+            case 'google':
+                const validateUser = await User.validate(decoded.user);
+                if (validUser){
+                    req.user = decoded.user;
+                    next();
+                }else{
+                    return res.status(401).redirect('/')
+                }
+            break;
         }
+      
      
     } catch (error) {
         //res.status(403).json({ success: false, error: 'Token inválido' });

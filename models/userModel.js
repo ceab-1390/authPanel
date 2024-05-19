@@ -1,8 +1,21 @@
 const { mongo, default: mongoose } = require('mongoose');
-const { use } = require('../routes');
 require('./db');
 
 const UserSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        unique: false,
+        required: true,
+        lowercase: true,
+        trim: true 
+     },
+     lastname: {
+        type: String,
+        unique: false,
+        required: false,
+        lowercase: true,
+        trim: true 
+     },
     user: {
        type: String,
        unique: true,
@@ -13,6 +26,14 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    provider: {
+        type: String,
+        unique: false,
+        required: true,
+        lowercase: true,
+        trim: true,
+        default: 'local' 
     }
 },{
     timestamps: true
@@ -50,6 +71,7 @@ class User {
             return false;
         } catch (error) {
             console.error(new Error('Error al buscar la informacion en la base de datos: '+error))
+            return false
         }
     }
 

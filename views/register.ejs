@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title>Registrate</title>
+</head>
+<body class="bg-success">
+    <h1 class="text-center text-light">Bienvenido a sitios</h1>
+    <div class="container">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+            <div class="card border-0 shadow rounded-3 my-5">
+              <div class="card-body p-4 p-sm-5">
+                <h5 class="card-title text-center mb-5 fw-light fs-5">Registro</h5>
+                <form action="#" method="post">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="name" id="name" placeholder="Nombre">
+                    <label for="floatingInput">Nombre</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="lastname" id="lastname" placeholder="Apellido">
+                    <label for="floatingInput">Apellido</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control" name="user" id="user" placeholder="Email">
+                    <label for="floatingInput">Email</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
+                    <label for="floatingPassword">Contraseña</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Confirmar Contraseña">
+                    <label for="floatingPassword">Confirmar Contraseña</label>
+                  </div>
+                  <div class="d-grid">
+                    <button class="btn btn-success btn-login text-uppercase fw-bold mt-2" type="submit">Register</button>
+                  </div>
+                  <div class="d-grid">
+                    <a href="/auth/google" class="btn btn-success btn-login text-uppercase fw-bold mt-2">Sing in with Google</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+    </div>
+</body>
+</html>

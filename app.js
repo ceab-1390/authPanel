@@ -3,9 +3,17 @@ const express = require('express');
 const app = express()
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const routes = require('./routes')
+const routes = require('./routes/routes')
 const cookieParser = require('cookie-parser');
 const expressLayouts = require('express-ejs-layouts');
+const passport = require('passport');
+
+
+app.use(session({
+    resave: false,
+    saveUninitialized: true,
+    secret: process.env.SECRET 
+}));
 
 
 const port = process.env.PORT;
@@ -14,6 +22,8 @@ console.log('views', __dirname + '/views/')
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressLayouts)
+app.use(passport.initialize());
+app.use(passport.session());
 app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/public', express.static(__dirname + '/public'));
