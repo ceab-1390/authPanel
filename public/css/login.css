@@ -1,0 +1,32 @@
+html, body {
+    min-height: 100%;
+    background-attachment: fixed;
+}
+  
+body::before {
+    content: "" !important;
+    background: url('/public/img/backGroundLogin.png') !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    opacity: 1 !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    position: fixed !important;
+    z-index: -2 !important;  
+}
+
+.card {
+    backdrop-filter: blur(2.5px) saturate(30%) !important;
+    -webkit-backdrop-filter: blur(2.5px) saturate(30%) !important;
+    background-color: rgba(0, 223, 108, 0.475) !important;
+    border: solid 2px rgba(0, 223, 108, 0.4) !important;
+    box-shadow: 0 10px 15px 0 rgba(0,0,0,0.5), 0 10px 20px 0 rgba(0,0,0,0.19) !important;
+}
+
+.text-bold{
+    font-weight: bold !important; 
+}

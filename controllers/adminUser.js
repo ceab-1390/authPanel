@@ -9,7 +9,10 @@ async function runNewUser(){
     if (!validate){
         const newUser = await User.createOne({
             user : 'admin',
-            password : pass
+            password : pass,
+            name: 'Super User',
+            lastname: 'Admin',
+            superUser: true,
         });
         console.log(newUser)
     }else{

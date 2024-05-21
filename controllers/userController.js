@@ -5,6 +5,12 @@ const jwt = require('jsonwebtoken');
 const views = '../views/'
 const Logguer = require('../logger/logger');
 
+let formData = {
+    name: '',
+    lastname: '',
+    user: '',
+    data: false
+}
 
 module.exports.index = async (req,res) =>{
     req.session.destroy();
@@ -74,14 +80,70 @@ module.exports.logIn = async (req,res) => {
 };
 
 module.exports.register = async (req,res) => {
-    res.render('register',{layout:false})
+    res.render('register',{layout:false,alert:false,formData})
+    req.session.formData = {
+        name: '',
+        lastname: '',
+        user: '',
+        data: false
+    }
 }
 
 module.exports.registerOne = async (req,res) => {
-    console.log(req.body)
+    req.session.formData = {};
     let password = req.body.password;
     if(password[0] != password[1]){
-        res.send('password not math')
+        req.session.formData = req.body
+        formData = req.session.formData
+        formData.data = true;
+        res.render('register',{
+            layout:false,
+            alert:true,
+            alertTitle: 'Advertneccia',
+            alertMessage: 'Las contrasenas no coinciden',
+            alertIcon: 'error',
+            showConfirmButton: true,
+            ruta: 'register',
+            layout: false,
+            formData
+        });
+    }else{
+        let data = req.body
+        data.password = data.password[0];
+        data.password = Bcrypt.hashSync(data.password, 10);
+        let validateUser =await User.validate(data.user);
+        console.log(validateUser)
+        if(validateUser){
+            req.session.formData = req.body
+            formData = req.session.formData
+            formData.data = true;
+            res.render('register',{
+                layout:false,
+                alert:true,
+                alertTitle: 'Advertneccia',
+                alertMessage: 'El usuario ya existe en los registros',
+                alertIcon: 'error',
+                showConfirmButton: true,
+                ruta: 'register',
+                layout: false,
+                formData
+            });
+        }else{
+            let saveUser = await User.createOne(data);
+            console.log(saveUser);
+            req.session.formData = {};
+            res.render('login',{
+                layout:false,
+                alert:true,
+                alertTitle: 'Advertneccia',
+                alertMessage: 'Registro exitoso',
+                alertIcon: 'success',
+                showConfirmButton: true,
+                ruta: '',
+                layout: false,
+            }); 
+        }
+ 
     }
 }
 

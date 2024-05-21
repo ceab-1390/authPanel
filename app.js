@@ -28,11 +28,14 @@ app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/public', express.static(__dirname + '/public'));
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+app.use('/css', express.static(__dirname + '/public/css'));
 app.use('/icons', express.static(__dirname + '/node_modules/bootstrap-icons/font'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/js', express.static(__dirname + '/node_modules/popper.js/dist'));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/sweetalert2/dist'));
+app.use('/js', express.static(__dirname + '/public/js'));
+
 app.use(routes);
 
 

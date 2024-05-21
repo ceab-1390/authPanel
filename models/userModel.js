@@ -34,6 +34,13 @@ const UserSchema = new mongoose.Schema({
         lowercase: true,
         trim: true,
         default: 'local' 
+    },
+    superUser: {
+        type: Boolean,
+        unique: false,
+        required: true,
+        lowercase: true,
+        default: false 
     }
 },{
     timestamps: true
