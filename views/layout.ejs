@@ -3,89 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/dist/css/adminlte.css">
     <link rel="stylesheet" href="/icons/bootstrap-icons.css">
-    <title> <%- title %></title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Sitios</title>
 </head>
 <body>
-  <div class="container-fluid ">
-    <div class="row flex-nowrap">
-        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-green-glass">
-            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2  min-vh-100">
-                <a href="/home" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-success text-decoration-none">
-                    <span class="fs-5 d-none d-sm-inline">Menu</span>
-                </a>
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start " id="menu">
-                <%if (validatedAcount){%>
-                    <li class="nav-item">
-                        <a href="/home" class="nav-link align-middle px-0 text-success">
-                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-success">
-                            <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span> </a>
-                        <ul class="collapse  nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                            <li class="w-100">
-                                <a href="#" class="nav-link px-0 text-success"> <span class="d-none d-sm-inline">Item</span> 1 </a>
-                            </li>
-                            <li>
-                                <a href="#" class="nav-link px-0 text-success "> <span class="d-none d-sm-inline">Item</span> 2 </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="/sitios" class="nav-link px-0 align-middle text-success">
-                            <i class="fs-4 bi-grid"></i> <span class="ms-1 d-none d-sm-inline">Sitios</span> </a>
-                    </li>
-                    <!--li>
-                        <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-success">
-                            <i class="fs-4 bi-bootstrap"></i> <span class="ms-1 d-none d-sm-inline">Bootstrap</span></a>
-                        <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
-                            <li class="w-100">
-                                <a href="#" class="nav-link px-0 text-success"> <span class="d-none d-sm-inline">Item</span> 1</a>
-                            </li>
-                            <li>
-                                <a href="#" class="nav-link px-0 text-success"> <span class="d-none d-sm-inline">Item</span> 2</a>
-                            </li>
-                        </ul>
-                    </li--->
-
-                <%}else {%>
-                        <li>
-                            <a href="/perfil/register" class="nav-link px-0 align-middle text-success">
-                                <i class="fs-4 bi-person-circle"></i> <span class="ms-1 d-none d-sm-inline">Completa tu perfil</span> </a>
-                        </li>
-                
-                <%}%>
-                </ul>
-
-                <hr>
-                <div class="dropdown pb-4">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="/public/img/User.png" alt="hugenerd" width="50" height="50" class="rounded-circle">
-                        <span class="d-none d-sm-inline mx-1 text-small"></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                        <li><a class="dropdown-item" href="#">Perfil</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="/logout">Sign out</a></li>
-                    </ul>
-                </div>
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white bg-green-glass navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="bi bi-list"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/home" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Contact</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Help
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+            <a class="dropdown-item" href="#">FAQ</a>
+            <a class="dropdown-item" href="#">Support</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Contact</a>
+            </div>
+        </li>
+        </ul>
+    
+        <!-- SEARCH FORM -->
+        <form class="form-inline ml-3">
+        <div class="input-group input-group-sm">
+            <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+            <div class="input-group-append">
+            <button class="btn btn-navbar" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
             </div>
         </div>
-        <script src="/js/sweetalert2.all.min.js"></script>
-
-        <div class="col py-3">
-          <%- body %>
+        </form>
+    
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+        <!-- Messages Dropdown Menu -->
+        <li class="nav-item dropdown">
+            <a href="/logout" class="nav-link"><i class="bi bi-box-arrow-right"></i>Salir</a>
+        </li>
+        <!-- Notifications Dropdown Menu
+        <li class="nav-item dropdown">
+            <a class="nav-link" data-toggle="dropdown" href="#">
+            <i class="bi fa-bell"></i>
+            <span class="badge badge-warning navbar-badge">15</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <span class="dropdown-header">15 Notifications</span>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+                <i class="fas fa-envelope mr-2"></i> 4 new messages
+                <span class="float-right text-muted text-sm">3 mins</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+                <i class="fas fa-users mr-2"></i> 8 friend requests
+                <span class="float-right text-muted text-sm">12 hours</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+                <i class="fas fa-file mr-2"></i> 3 new reports
+                <span class="float-right text-muted text-sm">2 days</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button"><i
+                class="fas fa-th-large"></i></a>
+        </li> -->
+        </ul>
+    </nav>
+    <!-- /.navbar -->
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-white-primary bg-green-glass elevation-4">
+        <!-- Brand Logo -->
+        <div class="brand-link d-flex justify-content-between align-items-center">
+            <a class="brand-link" href="/home">
+            <img src="/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3">
+            <span class="brand-text font-weight-light">Sitios</span>
+            </a>
+            <a class="pushmenu" data-widget="pushmenu" href="#" role="button"><i class="bi bi-list"></i></a>
         </div>
-    </div>
-</div>
-<script src="/js/bootstrap.bundle.min.js"></script>
+    
+        <!-- Sidebar -->
+        <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+            <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block"><%=user.name%></a>
+            </div>
+        </div>
+        <form class="form-inline">
+            <div class="input-group">
+            <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+            <div class="input-group-append">
+                <button class="btn btn-sidebar" type="submit">
+                <i class="bi bi-search"></i>
+                </button>
+            </div>
+            </div>
+        </form>
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+            <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+            <%if (validatedAcount){%>
+            <li class="nav-item menu-close">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon bi bi-folder"></i>
+                    <p>
+                        Mis Sitios
+                        <i class="right bi bi-caret-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                    <i class="bi bi-plus-circle nav-icon"></i>
+                    <p>Crear Sitio</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                    <i class="bi bi-eye nav-icon"></i>
+                    <p>Ver mis sitios</p>
+                    </a>
+                </li>
+            </ul>
+            </li>
+            <%}else{%>
+            <li class="nav-item">
+                <a href="/perfil/register" class="nav-link">
+                <i class="nav-icon fas fa-th"></i>
+                <p>
+                    Terminar registro
+                    <span class="right badge badge-danger">New</span>
+                </p>
+                </a>
+            </li>
+            <%}%>
+            <li class="nav-item">
+                <a class="nav-link active" href="/perfil/changePassword">
+                    <p>
+                        Cambio de clave
+                    </p>
+                </a>
+            </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+        </div>
+        <!-- /.sidebar -->
 
+    </aside>
+    <script src="/js/sweetalert2.all.min.js"></script>
+    <%- body %>
+
+    <div class="modal fade" id="changePassword"  tabindex="-1" aria-labelledby="exampleModalLabelPass" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Cambio de clave</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              <form action="" method="POST" novalidate onsubmit="validateForm2(this,'<%=user.user%>')">
+                <div class="form-floating mb-3">
+                  <input type="password" class="form-control" name="password" id="" placeholder="Contraseña" required pattern="\w{8,16}"> 
+                  <label for="password">Contraseña</label>
+                  <div class="invalid-feedback">
+                      Campo requerido
+                  </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" name="password" id="" placeholder="Confirmar Contraseña" required pattern="\w{8,16}">
+                    <label for="password">Confirmar Contraseña</label>
+                    <div class="invalid-feedback" id="">
+                        Campo requerido
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Las contraseñas deben coincidir." data-bs-placement="top">Guardar cambios</button>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/dist/js/adminlte.js"></script>
+    <% if(alert){ %>
+        <script>
+          Swal.fire({
+            icon: '<%=alertIcon%>',
+            title: '<%=alertTitle%>',
+            text: '<%=alertMessage%>',
+            showConfirmButton: true,
+          }).then(()=>{
+            window.location = '<%=ruta%>'
+          })
+        </script>
+      <% } %>
 </body>
 </html>
-

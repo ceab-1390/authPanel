@@ -143,10 +143,19 @@ module.exports.registerOne = async (req,res) => {
         }
  
     }
-}
+};
 
 module.exports.completedRegister = async (req,res) => {
-    res.render('completedRegisterForm',{title:'Registrar datos',user:req.user,validatedAcount:req.validatedAcount,formData})
+    res.render('completedRegisterForm',{user:req.user,validatedAcount:req.validatedAcount,formData,alert:false})
+};
+
+module.exports.finishRegister = async (req,res) => {
+    //res.render('completedRegisterForm',{user:req.user,validatedAcount:req.validatedAcount,formData})
+    Logguer.log(req.body)
+};
+
+module.exports.changePassword = async (req,res) => {
+    res.render('changePassword',{user:req.user,validatedAcount:req.validatedAcount,alert:false })
 }
 
 module.exports.logOut = (req,res) =>{

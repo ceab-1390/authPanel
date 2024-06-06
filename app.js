@@ -35,7 +35,8 @@ app.use('/js', express.static(__dirname + '/node_modules/popper.js/dist'));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/sweetalert2/dist'));
 app.use('/js', express.static(__dirname + '/public/js'));
-
+app.use('/js',express.static(__dirname + '/admin-lte/dist/js'));
+app.use('/dist',express.static(__dirname + '/node_modules/admin-lte/dist'));
 app.use(routes);
 
 
