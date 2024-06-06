@@ -20,25 +20,39 @@ module.exports.loguedIn = async (req,res,next) => {
     try {
         const decoded = jwt.verify(token, process.env.SECRET);
         const validUser = await User.findOne(decoded.user);
-        switch(validUser.provider){
+        if (validUser.id === decoded.id){
+            req.user = {}//validUser.user;
+            req.user.user = validUser.user;
+            req.user.name = validUser.name;
+            req.user.lastname = validUser.lastname;
+            req.validatedAcount = validUser.validatedAcount;
+            req.superUser = validUser.superUser;
+            next();
+        }else{
+            return res.status(401).redirect('/')
+        }
+        /*switch(validUser.provider){
             case 'local':
                 if (validUser.id === decoded.id){
-                    req.user = decoded.user;
+                    req.user = validUser.user;
+                    req.validatedAcount = validUser.validatedAcount;
+                    req.superUser = validUser.superUser;
                     next();
                 }else{
                     return res.status(401).redirect('/')
                 }
             break;
             case 'google':
-                const validateUser = await User.validate(decoded.user);
                 if (validUser){
-                    req.user = decoded.user;
+                    req.user = validUser.user;
+                    req.validatedAcount = validUser.validatedAcount;
+                    req.superUser = validUser.superUser;
                     next();
                 }else{
                     return res.status(401).redirect('/')
                 }
             break;
-        }
+        }*/
       
      
     } catch (error) {

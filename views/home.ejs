@@ -1,1 +1,14 @@
-<h3 class="text-center text-success"><%=user%></h3>
+<h3 class="text-center text-success"><%=user.name%> <%=user.lastname%></h3>
+
+<% if(!validatedAcount){ %>
+  <script>
+    Swal.fire({
+      icon: 'warning',
+      title: 'Completa tu perfil',
+      text: 'Completa tu perfil para disfrutar del servicio',
+      showConfirmButton: true,
+    }).then(()=>{
+      window.location = '#'
+    })
+  </script>
+<% } %>

@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card border-0 shadow rounded-3 my-5">
+          <div class="card-body p-4 p-sm-5">
+            <h5 class="card-title text-center mb-5 fw-light fs-5">Completa tu Registro</h5>
+            <form action="#" method="post" class="needs-validation" novalidate>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" name="cedula" id="name" placeholder="CI" value="<%=formData.data ? formData.name : ''%>" pattern="[a-zA-ZñÑ ]{2,50}" required>
+                <label for="floatingInput">Cedula de identidad o Pasaporte</label>
+                <div class="invalid-feedback">
+                  El nombre no debe estar vacio y solo debe contener letras
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" name="lastname" id="lastname" placeholder="Apellido" value="<%=formData.data ? formData.lastname : ''%>" pattern="[a-zA-ZñÑ ]{2,50}">
+                <label for="floatingInput">Apellido</label>
+                <div class="invalid-feedback">
+                  El apellido solo debe contener letras
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" name="user" id="user" placeholder="Email" value="<%=formData.data ? formData.user : ''%>" required>
+                <label for="floatingInput">Email</label>
+                <div class="invalid-feedback">
+                  El correo debe estar en etse formato pepito_perez@micorreo.com
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="file" class="form-control" name="" id="" placeholder="" value="<%=formData.data ? formData.user : ''%>" required>
+                <label for="floatingInput">Documento</label>
+                <div class="invalid-feedback">
+                  El correo debe estar en etse formato pepito_perez@micorreo.com
+                </div>
+              </div>
+              <div class="d-grid">
+                <button class="btn btn-success btn-login text-uppercase fw-bold mt-2" type="submit">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+</div>

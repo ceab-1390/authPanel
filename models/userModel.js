@@ -8,14 +8,14 @@ const UserSchema = new mongoose.Schema({
         required: true,
         lowercase: true,
         trim: true 
-     },
-     lastname: {
-        type: String,
-        unique: false,
-        required: false,
-        lowercase: true,
-        trim: true 
-     },
+    },
+    lastname: {
+       type: String,
+       unique: false,
+       required: false,
+       lowercase: true,
+       trim: true 
+    },
     user: {
        type: String,
        unique: true,
@@ -39,7 +39,12 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         unique: false,
         required: true,
-        lowercase: true,
+        default: false 
+    },
+    validatedAcount: {
+        type: Boolean,
+        unique: false,
+        required: true,
         default: false 
     }
 },{

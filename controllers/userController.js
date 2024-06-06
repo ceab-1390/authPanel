@@ -18,12 +18,12 @@ module.exports.index = async (req,res) =>{
 };
 
 module.exports.logIn = async (req,res) => {
-    
-  //Logguer.debug(req)
     if (Object.keys(req.body).length === 0){
         if (req.user.provider === 'google'){
-            const token = jwt.sign({id: req.user.id, user: req.user._json.email}, process.env.SECRET, { expiresIn: '1d' });
-            res.status(200).cookie('authToken',token ).redirect('/home');
+            const userLogin = await User.findOne(req.user._json.email).then((U)=>{
+                const token = jwt.sign({id: U._id, user: U.user}, process.env.SECRET, { expiresIn: '1d' });
+                res.status(200).cookie('authToken',token ).redirect('/home');
+            })
         }
     }else{
         if (req.body.user == '' && req.body.password == ''){
@@ -75,8 +75,6 @@ module.exports.logIn = async (req,res) => {
         })
         }
     }
-
-    
 };
 
 module.exports.register = async (req,res) => {
@@ -147,6 +145,9 @@ module.exports.registerOne = async (req,res) => {
     }
 }
 
+module.exports.completedRegister = async (req,res) => {
+    res.render('completedRegisterForm',{title:'Registrar datos',user:req.user,validatedAcount:req.validatedAcount,formData})
+}
 
 module.exports.logOut = (req,res) =>{
     req.session.destroy();

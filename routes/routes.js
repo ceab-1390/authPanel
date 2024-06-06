@@ -16,6 +16,11 @@ router.get('/logout',auth.loguedIn ,userController.logOut)
 router.get('/home',auth.loguedIn ,homeController.index);
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/error' }), userController.logIn)
+router.get('/perfil/register',auth.loguedIn,userController.completedRegister)
+
+
+//sitios
+router.get('/sitios',auth.loguedIn,homeController.sitios);
 
 //router.get('/success',userController.googleSuccess);
 
