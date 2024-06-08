@@ -1,9 +1,11 @@
 require('dotenv').config;
-const User = require('../models/userModel');
+const {User,AditionalInfo} = require('../models/userModel');
 const Bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const views = '../views/'
 const Logguer = require('../logger/logger');
+const s3Upload = require('./filesManage')
+
 
 let formData = {
     name: '',
@@ -110,7 +112,6 @@ module.exports.registerOne = async (req,res) => {
         data.password = data.password[0];
         data.password = Bcrypt.hashSync(data.password, 10);
         let validateUser =await User.validate(data.user);
-        console.log(validateUser)
         if(validateUser){
             req.session.formData = req.body
             formData = req.session.formData
@@ -128,7 +129,6 @@ module.exports.registerOne = async (req,res) => {
             });
         }else{
             let saveUser = await User.createOne(data);
-            console.log(saveUser);
             req.session.formData = {};
             res.render('login',{
                 layout:false,
@@ -146,12 +146,27 @@ module.exports.registerOne = async (req,res) => {
 };
 
 module.exports.completedRegister = async (req,res) => {
-    res.render('completedRegisterForm',{user:req.user,validatedAcount:req.validatedAcount,formData,alert:false})
+    const userRegister = await User.findOne(req.user.user);
+     
+    res.render('completedRegisterForm',{user:req.user,validatedAcount:req.validatedAcount,formData,alert:false,userRegister:userRegister.user})
 };
 
 module.exports.finishRegister = async (req,res) => {
-    //res.render('completedRegisterForm',{user:req.user,validatedAcount:req.validatedAcount,formData})
-    Logguer.log(req.body)
+    let user = await User.findOne(req.user.user);
+    let file = req.files.document_file;
+
+    //Logguer.log(user._id)
+    file.mv('/tmp/'+Date.now().toString()+'_'+file.name, async err =>{
+        if(err) return res.status(500).send({ message : err });
+        const upload = await s3Upload(file.data,Date.now().toString()+'_'+file.name);
+        let data = req.body;
+        data.document_file = upload;
+        data.userId = user._id;
+        let saveData = await AditionalInfo.createOne(data);
+        Logguer.log(saveData)
+        return res.render('test',{layout:false,img:upload});
+    });
+
 };
 
 module.exports.changePassword = async (req,res) => {

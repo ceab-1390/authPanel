@@ -1,5 +1,36 @@
-const { mongo, default: mongoose } = require('mongoose');
+const { mongo, default: mongoose,Schema } = require('mongoose');
 require('./db');
+
+
+const AditionalInfoSchema = new mongoose.Schema({
+    document: {
+        type: String,
+        unique: true,
+        required: true,
+        lowercase: true,
+        trim: true
+    },
+    phone: {
+        type: String,
+        unique: false,
+        required: true,
+        lowercase: true,
+        trim: true 
+    },
+    document_file:{
+        type: String,
+        unique: false,
+        required: true,
+        lowercase: false,
+        trim: true
+    },
+},{
+    timestamps: true
+},{
+    collection: "aditional_info_users"
+});
+
+const aditionalInfoModel = new mongoose.model("Aditional_info_users",AditionalInfoSchema);
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -41,17 +72,28 @@ const UserSchema = new mongoose.Schema({
         required: true,
         default: false 
     },
+    validateStatus:{
+        type: Number,
+        unique: false,
+        required: true,
+        default: 1 
+    },
     validatedAcount: {
         type: Boolean,
         unique: false,
         required: true,
         default: false 
+    },
+    info:{
+        type: Schema.Types.ObjectId,
+        required: false,
+        ref: aditionalInfoModel,
     }
 },{
     timestamps: true
 },{
     collection: "users"
-} )
+} );
 
 const UserModel = new mongoose.model("User", UserSchema);
 
@@ -63,8 +105,7 @@ class User {
         } catch (error) {
             console.error(new Error('Error al buscar la informacion en la base de datos: '+error))
         }
-    }
-
+    };
     static async createOne(data){
         try {
             const newUser = await UserModel(data)
@@ -73,7 +114,7 @@ class User {
         } catch (error) {
             console.error(new Error('Error al guardar la informacion en la base de datos: '+error))
         }
-    }
+    };
     static async validate(U){
         try {
             const user = await UserModel.findOne({user: U});
@@ -85,17 +126,53 @@ class User {
             console.error(new Error('Error al buscar la informacion en la base de datos: '+error))
             return false
         }
-    }
-
-
+    };
     static async findOne(U){
         try {
-            const user = await UserModel.findOne({user: U});
+            const user = await UserModel.findOne({user: U}).populate('info');;
             return user
         } catch (error) {
             console.error(new Error('Error al buscar la informacion en la base de datos: '+error))
         }
+    };
+    static async updateInfo(id,data){
+        try {
+            let update = await UserModel.updateOne(
+                {_id:id},
+                {
+                  $set:{
+                    info: data,
+                    validateStatus: 2
+                  }  
+                },
+            )
+        } catch (error) {
+            console.error(error);
+        }
     }
+};
+
+class AditionalInfo{
+    static async createOne(data){
+        try {
+            const newData = await aditionalInfoModel(data)
+            newData.save()
+            let dataInfo = {}
+            dataInfo = newData._id
+            const updateUser = await User.updateInfo(data.userId,dataInfo)
+            console.log(updateUser)
+            return newData
+        } catch (error) {
+            console.error(new Error('Error al guardar la informacion en la base de datos: '+error))
+        }
+    };
 }
 
-module.exports = User
+module.exports = {User,AditionalInfo}
+
+// async function testing(){
+//     let user = await User.findOne('dani@local.com');
+//     console.log(user)
+// }
+
+// testing()

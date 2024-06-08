@@ -7,6 +7,7 @@ const routes = require('./routes/routes')
 const cookieParser = require('cookie-parser');
 const expressLayouts = require('express-ejs-layouts');
 const passport = require('passport');
+const fileUpload = require('express-fileupload');
 
 
 app.use(session({
@@ -37,6 +38,7 @@ app.use('/js', express.static(__dirname + '/node_modules/sweetalert2/dist'));
 app.use('/js', express.static(__dirname + '/public/js'));
 app.use('/js',express.static(__dirname + '/admin-lte/dist/js'));
 app.use('/dist',express.static(__dirname + '/node_modules/admin-lte/dist'));
+app.use(fileUpload());
 app.use(routes);
 
 

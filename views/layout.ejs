@@ -176,41 +176,9 @@
     <script src="/js/sweetalert2.all.min.js"></script>
     <%- body %>
 
-    <div class="modal fade" id="changePassword"  tabindex="-1" aria-labelledby="exampleModalLabelPass" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Cambio de clave</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-              <form action="" method="POST" novalidate onsubmit="validateForm2(this,'<%=user.user%>')">
-                <div class="form-floating mb-3">
-                  <input type="password" class="form-control" name="password" id="" placeholder="Contraseña" required pattern="\w{8,16}"> 
-                  <label for="password">Contraseña</label>
-                  <div class="invalid-feedback">
-                      Campo requerido
-                  </div>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control" name="password" id="" placeholder="Confirmar Contraseña" required pattern="\w{8,16}">
-                    <label for="password">Confirmar Contraseña</label>
-                    <div class="invalid-feedback" id="">
-                        Campo requerido
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Las contraseñas deben coincidir." data-bs-placement="top">Guardar cambios</button>
-            </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/dist/js/adminlte.js"></script>
+    <script src="/public/js/functions.js"></script>
     <% if(alert){ %>
         <script>
           Swal.fire({

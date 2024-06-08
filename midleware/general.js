@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const {User} = require('../models/userModel');
 
 module.exports.isRegister = async (req,res,next) => {
     const user = await User.findOne(req.user.user);
