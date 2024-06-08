@@ -163,7 +163,7 @@ module.exports.finishRegister = async (req,res) => {
         data.document_file = upload;
         data.userId = user._id;
         let saveData = await AditionalInfo.createOne(data);
-        Logguer.log(saveData)
+        //Logguer.log(saveData)
         return res.render('test',{layout:false,img:upload});
     });
 

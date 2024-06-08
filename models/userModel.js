@@ -72,7 +72,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         default: false 
     },
-    validateStatus:{
+    /*validateStatus:{
         type: Number,
         unique: false,
         required: true,
@@ -83,6 +83,12 @@ const UserSchema = new mongoose.Schema({
         unique: false,
         required: true,
         default: false 
+    },*/
+    validatedAcount: {
+        type: Number,
+        unique: false,
+        required: true,
+        default: 0 
     },
     info:{
         type: Schema.Types.ObjectId,
@@ -142,7 +148,7 @@ class User {
                 {
                   $set:{
                     info: data,
-                    validateStatus: 2
+                    validatedAcount: 1
                   }  
                 },
             )
@@ -160,7 +166,6 @@ class AditionalInfo{
             let dataInfo = {}
             dataInfo = newData._id
             const updateUser = await User.updateInfo(data.userId,dataInfo)
-            console.log(updateUser)
             return newData
         } catch (error) {
             console.error(new Error('Error al guardar la informacion en la base de datos: '+error))
