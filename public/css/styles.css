@@ -9,3 +9,8 @@
 .shadow-lg-lte{
     box-shadow: 0 10px 15px 0 rgba(0,0,0,0.5), 0 10px 20px 0 rgba(0,0,0,0.19) !important;
 } 
+
+.img-qr-pay {
+    width: 300px !important;
+    height: 300px !important;
+}

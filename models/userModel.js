@@ -159,16 +159,29 @@ class User {
 };
 
 class AditionalInfo{
+    static async validate(CI){
+        try {
+            const document = await aditionalInfoModel.findOne({document: CI});
+            if (document){
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error(new Error('Error al buscar la informacion en la base de datos: '+error))
+            return false
+        }
+    };
     static async createOne(data){
         try {
             const newData = await aditionalInfoModel(data)
-            newData.save()
+            await newData.save()
             let dataInfo = {}
             dataInfo = newData._id
             const updateUser = await User.updateInfo(data.userId,dataInfo)
             return newData
         } catch (error) {
-            console.error(new Error('Error al guardar la informacion en la base de datos: '+error))
+            console.error(new Error('Error al guardar la informacion en la base de datos: '+error));
+            return false;
         }
     };
 }

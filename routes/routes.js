@@ -19,6 +19,8 @@ router.get('/auth/google', passport.authenticate('google', { scope : ['profile',
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/error' }), userController.logIn)
 router.get('/perfil/register',auth.loguedIn,midleware.isRegister,userController.completedRegister);
 router.post('/perfil/register',auth.loguedIn,userController.finishRegister);
+router.get('/perfil/pay',auth.loguedIn,userController.payIndex);
+router.post('/perfil/pay',auth.loguedIn,userController.payConfirm);
 router.get('/perfil/changePassword',auth.loguedIn,midleware.provider,userController.changePassword)
 
 

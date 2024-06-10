@@ -1,0 +1,44 @@
+
+  <div class="card mb-3 shadow-lg-lte rounded-3  card-outline card-success">
+    <div class="row g-0 card-tools">
+        <div class="col-md-4">
+        <img src="/public/img/QrBDV.png" class="card-img-top img-qr-pay" alt="...">
+        </div>
+        <div class="col-md-4">
+            <div class="card-body">
+                <h5 class="card-title">Datos para el pago:</h5><br><br>
+                <p class="card-text">Cedula: 19.206.403</p>
+                <p class="card-text">Telefono: 0412-0000000</p>
+                <p class="card-text">Monto: 40Bs</p>
+                <p class="card-text"><small class="text-body-secondary">Actualizado hace 3 minutos</small></p>
+            </div>
+        </div>
+            <div class="col-md-4 card-footer">
+                <h5 class="card-title">Registre su pago:</h5><br><br>
+                <form action="/perfil/pay" method="POST" class="needs-validation" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="document" id="document" placeholder="20123456" pattern="\d{6,9}" required>
+                        <label for="floatingInput">Cedula de identidad o Pasaporte</label>
+                        <div class="invalid-feedback">
+                        Ej: 12345678
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="phone" id="phone" placeholder="04121234567" pattern="\d{7,11}" required>
+                        <label for="floatingInput">Numero telefonico</label>
+                        <div class="invalid-feedback">
+                        Ej: 12345678
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="referencia" id="referencia" placeholder="00001234" pattern="\d{4,20}" required>
+                        <label for="floatingInput">Codigo de Referencia</label>
+                        <div class="invalid-feedback">
+                        Ej: 12345678
+                        </div>
+                    </div>
+                    <button class="btn btn-success btn-login text-uppercase fw-bold mt-2" type="submit">Guardar</button>
+                </form>
+            </div>
+        </div>
+  </div>

@@ -148,7 +148,7 @@ module.exports.registerOne = async (req,res) => {
 module.exports.completedRegister = async (req,res) => {
     const userRegister = await User.findOne(req.user.user);
      
-    res.render('completedRegisterForm',{user:req.user,validatedAcount:req.validatedAcount,formData,alert:false,userRegister:userRegister.user})
+    res.render('completedRegisterForm',{user:req.user,validatedAcount:req.validatedAcount,formData,alert:false,userRegister:userRegister.user});
 };
 
 module.exports.finishRegister = async (req,res) => {
@@ -158,20 +158,74 @@ module.exports.finishRegister = async (req,res) => {
     //Logguer.log(user._id)
     file.mv('/tmp/'+Date.now().toString()+'_'+file.name, async err =>{
         if(err) return res.status(500).send({ message : err });
-        const upload = await s3Upload(file.data,Date.now().toString()+'_'+file.name);
-        let data = req.body;
-        data.document_file = upload;
-        data.userId = user._id;
-        let saveData = await AditionalInfo.createOne(data);
-        //Logguer.log(saveData)
-        return res.render('test',{layout:false,img:upload});
+
+        const validateDocument = await AditionalInfo.validate(req.body.document)
+        if (!validateDocument){
+            const upload = await s3Upload(file.data,Date.now().toString()+'_'+file.name);
+            let data = req.body;
+            data.document_file = upload;
+            data.userId = user._id;
+            let saveData = await AditionalInfo.createOne(data);
+            //Logguer.log(saveData)
+            if (saveData){
+                res.render('home',{
+                    title:'Home',
+                    user:req.user,
+                    validatedAcount:req.validatedAcount,
+                    alert:true,
+                    alertTitle: '!!!Exito!!!',
+                    alertMessage: 'Gracias por registrar sus datos',
+                    alertIcon: 'success',
+                    showConfirmButton: true,
+                    ruta: '/home',
+        
+                });
+            }else{
+                res.render('home',{
+                    title:'Home',
+                    user:req.user,
+                    validatedAcount:req.validatedAcount,
+                    alert:true,
+                    alertTitle: '!!!Error!!!',
+                    alertMessage: 'Ocurrio un error al guardar sus datos, compruebe su documento de identidad u otrta informacion, si su documento ya esta registrado en otra cuenta no prodra realizar esta accion',
+                    alertIcon: 'error',
+                    showConfirmButton: true,
+                    ruta: '/home',
+        
+                });
+            }
+        }else{
+            res.render('home',{
+                title:'Home',
+                user:req.user,
+                validatedAcount:req.validatedAcount,
+                alert:true,
+                alertTitle: '!!!Error!!!',
+                alertMessage: 'El documentop de identidad ya se encuentra registrado!!!',
+                alertIcon: 'error',
+                showConfirmButton: true,
+                ruta: '/home',
+    
+            });
+        }
     });
 
 };
 
+module.exports.payIndex = async (req,res) => {
+    const userRegister = await User.findOne(req.user.user);
+    res.render('completedPayForm',{user:req.user,validatedAcount:req.validatedAcount,formData,alert:false,userRegister:userRegister.user});
+};
+
+module.exports.payConfirm = async (req,res) => {
+    const userRegister = await User.findOne(req.user.user);
+    Logguer.log(req.body)
+    //res.render('completedPayForm',{user:req.user,validatedAcount:req.validatedAcount,formData,alert:false,userRegister:userRegister.user});
+};
+
 module.exports.changePassword = async (req,res) => {
     res.render('changePassword',{user:req.user,validatedAcount:req.validatedAcount,alert:false })
-}
+};
 
 module.exports.logOut = (req,res) =>{
     req.session.destroy();

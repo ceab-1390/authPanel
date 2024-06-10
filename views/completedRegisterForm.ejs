@@ -1,18 +1,17 @@
     
-<div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-    <div class="card border-0 shadow-lg-lte rounded-3 my-5">
+    <div class="card shadow-lg-lte rounded-3 card-outline card-success">
       <div class="card-body p-4 p-sm-5">
         <h5 class="card-title text-center mb-5 fw-light fs-5">Completa tu Registro</h5>
-        <form action="#" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <form action="/perfil/register" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
           <div class="form-floating mb-3">
-            <input type="text" class="form-control" name="document" id="name" placeholder="CI" value="<%=formData.data ? formData.name : ''%>" pattern="\d{6,9}" required>
+            <input type="text" class="form-control" name="document" id="name" placeholder="Numero de documento" pattern="\d{6,9}" required>
             <label for="floatingInput">Cedula de identidad o Pasaporte</label>
             <div class="invalid-feedback">
               Ej: 12345678
             </div>
           </div>
           <div class="form-floating mb-3">
-            <input type="text" class="form-control" name="phone" id="phone" placeholder="CI" value="<%=formData.data ? formData.name : ''%>" pattern="\d{9,11}" required>
+            <input type="text" class="form-control" name="phone" id="phone" placeholder="Telefono" pattern="\d{9,11}" required>
             <label for="floatingInput">Telefono</label>
             <div class="invalid-feedback">
               Ej: 04120000000
@@ -38,4 +37,3 @@
         </form>
       </div>
     </div>
-</div>
