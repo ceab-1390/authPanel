@@ -21,7 +21,8 @@ router.get('/perfil/register',auth.loguedIn,midleware.isRegister,userController.
 router.post('/perfil/register',auth.loguedIn,userController.finishRegister);
 router.get('/perfil/pay',auth.loguedIn,userController.payIndex);
 router.post('/perfil/pay',auth.loguedIn,userController.payConfirm);
-router.get('/perfil/changePassword',auth.loguedIn,midleware.provider,userController.changePassword)
+//router.get('/perfil/changePassword',auth.loguedIn,midleware.provider,userController.changePassword)
+router.post('/perfil/changePassword',auth.loguedIn,midleware.provider,userController.changePassword)
 
 
 //sitios

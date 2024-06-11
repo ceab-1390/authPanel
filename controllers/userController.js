@@ -4,7 +4,9 @@ const Bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const views = '../views/'
 const Logguer = require('../logger/logger');
-const s3Upload = require('./filesManage')
+const {s3Upload,manageFile} = require('./filesManage');
+const fs = require('fs');
+const {formidable} = require('formidable');
 
 
 let formData = {
@@ -22,6 +24,7 @@ module.exports.index = async (req,res) =>{
 module.exports.logIn = async (req,res) => {
     if (Object.keys(req.body).length === 0){
         if (req.user.provider === 'google'){
+            Logguer.log(req.user._json.email)
             const userLogin = await User.findOne(req.user._json.email).then((U)=>{
                 const token = jwt.sign({id: U._id, user: U.user}, process.env.SECRET, { expiresIn: '1d' });
                 res.status(200).cookie('authToken',token ).redirect('/home');
@@ -141,7 +144,7 @@ module.exports.registerOne = async (req,res) => {
                 layout: false,
             }); 
         }
- 
+        
     }
 };
 
@@ -152,21 +155,157 @@ module.exports.completedRegister = async (req,res) => {
 };
 
 module.exports.finishRegister = async (req,res) => {
+        let user = await User.findOne(req.user.user);
+        function returnError(error){
+            res.render('home',{
+                title:'Home',
+                user:req.user,
+                validatedAcount:req.validatedAcount,
+                alert:true,
+                alertTitle: '!!!Error!!!',
+                alertMessage: error,
+                alertIcon: 'error',
+                showConfirmButton: true,
+                ruta: '/home',
+    
+            });
+        }
+        let options = {
+            maxFileSize: 10 * 1024 * 1024,
+            allowEmptyFile: false
+        };
+        const form = formidable(options);
+        try {
+            const result = await new Promise((resolve,reject) => {
+                form.parse(req,async (err, fields, files) => {
+                    if (err){
+                        reject(err)
+                    }else{
+                        resolve({fields,files});
+                    };
+                });
+            })
+            let {fields,files} = result;
+            let data = {};
+            data.document = fields.document[0];
+            data.phone = fields.phone[0];
+            data.email = fields.email[0];
+            data.userId = user._id;
+            const validateDocument = await AditionalInfo.validate(data.document);
+            if (!validateDocument){
+                const filesManage = await manageFile(files.document_file[0]);
+                const upload = await s3Upload(filesManage.fileStream,filesManage.name);
+                if (!upload){
+                    return returnError('Ocurrio un error al intentar subir el archivo!!!');
+                }else{
+                    data.document_file = upload;
+                    let saveData = await AditionalInfo.createOne(data);
+                    if (saveData){
+                        res.render('home',{
+                            title:'Home',
+                            user:req.user,
+                            validatedAcount:req.validatedAcount,
+                            alert:true,
+                            alertTitle: '!!!Exito!!!',
+                            alertMessage: 'Gracias por registrar sus datos',
+                            alertIcon: 'success',
+                            showConfirmButton: true,
+                            ruta: '/home',
+                
+                        });
+                    }else{
+                        returnError('Ocurrio un error al guardar sus datos, compruebe su documento de identidad u otrta informacion, si su documento ya esta registrado en otra cuenta no prodra realizar esta accion')
+                    }
+                    }
+            }else{
+             returnError('El documento de identidad ya se encuentra registrado!!!') 
+            }
+        } catch (error) {
+            const regex = /options\.maxTotalFileSize \(\d+ bytes\) exceeded, received (\d+) bytes of file data/;
+            const match = error.message.match(regex);
+            if (match){
+                returnError('El archivo exede el volumen establecido = 10Mb, por favor ingrese un archivo menos pesado')
+            }else{
+                returnError('Ocurrio un error al subir sus datos')
+            }
+            Logguer.error(error)
+        }
+
+
+
+        // const validateDocument = await AditionalInfo.validate(data.document);
+        // if (!validateDocument){
+        //     const filesManage = await manageFile(files.document_file[0]);
+        //     const upload = await s3Upload(filesManage.fileStream,filesManage.name);
+        //     Logguer.log(upload)
+        // }else{
+        //     returnError('El documento de identidad ya se encuentra registrado!!!') 
+        // }
+
+    /*let datos = await req[0]
+    Logguer.log(datos)
     let user = await User.findOne(req.user.user);
-    let file = req.files.document_file;
+    function returnError(error){
+        res.render('home',{
+            title:'Home',
+            user:req.user,
+            validatedAcount:req.validatedAcount,
+            alert:true,
+            alertTitle: '!!!Error!!!',
+            alertMessage: error,
+            alertIcon: 'error',
+            showConfirmButton: true,
+            ruta: '/home',
 
-    //Logguer.log(user._id)
-    file.mv('/tmp/'+Date.now().toString()+'_'+file.name, async err =>{
-        if(err) return res.status(500).send({ message : err });
+        });
+    }
+    const validateDocument = await AditionalInfo.validate(req.body.document);
+    /*if (!validateDocument){
+        try {
+            const file = await manageFile(req);
+            const upload = await s3Upload(file.fileStream,file.name);
+            console.log(upload);
+            if (!upload){
+                return returnError('Ocurrio un error al intentar subir el archivo!!!');
+            }else{
+                let data = {}
+                Logguer.log(file.fields)
+                data.document = file.fields.document[0];
+                data.phone = file.fields.phone[0];
+                data.document_file = upload;
+                data.userId = user._id;
+                let saveData = await AditionalInfo.createOne(data);
+                if (saveData){
+                    res.render('home',{
+                        title:'Home',
+                        user:req.user,
+                        validatedAcount:req.validatedAcount,
+                        alert:true,
+                        alertTitle: '!!!Exito!!!',
+                        alertMessage: 'Gracias por registrar sus datos',
+                        alertIcon: 'success',
+                        showConfirmButton: true,
+                        ruta: '/home',
+            
+                    });
+                }else{
+                    returnError('Ocurrio un error al guardar sus datos, compruebe su documento de identidad u otrta informacion, si su documento ya esta registrado en otra cuenta no prodra realizar esta accion')
+                }
+            }
+        } catch (error) {
+            Logguer.error(error);
+            return returnError('No fue posible procesar el archivo!!!');
+        }
+    }else{
+        returnError('El documento de identidad ya se encuentra registrado!!!')
+    }*/
 
-        const validateDocument = await AditionalInfo.validate(req.body.document)
-        if (!validateDocument){
-            const upload = await s3Upload(file.data,Date.now().toString()+'_'+file.name);
-            let data = req.body;
-            data.document_file = upload;
+    /*const validateDocument = await AditionalInfo.validate(req.body.document);
+    if (!validateDocument){
+        const file = await manageFile(req).then(async (sta) =>{
+            data.document_file = sta;
             data.userId = user._id;
             let saveData = await AditionalInfo.createOne(data);
-            //Logguer.log(saveData)
             if (saveData){
                 res.render('home',{
                     title:'Home',
@@ -181,35 +320,79 @@ module.exports.finishRegister = async (req,res) => {
         
                 });
             }else{
+                returnError('Ocurrio un error al guardar sus datos, compruebe su documento de identidad u otrta informacion, si su documento ya esta registrado en otra cuenta no prodra realizar esta accion')
+            }
+        }).catch(err =>{
+            Logguer.log('Luego aqui')
+            Logguer.error(err);
+            return returnError('No fue posible procesar el archivo!!!')
+        })
+    }else{
+        returnError('El documento de identidad ya se encuentra registrado!!!')
+    };*/
+  
+    
+    /*let file = req.files.document_file;
+    if (file.size * 10 * 1024){
+        Logguer.log('archivo muy grande')
+    }
+    let pathFileTmp = '/tmp/'+Date.now().toString()+'_'+file.name
+    console.log(file)*/
+
+    /*function returnError(error){
+        res.render('home',{
+            title:'Home',
+            user:req.user,
+            validatedAcount:req.validatedAcount,
+            alert:true,
+            alertTitle: '!!!Error!!!',
+            alertMessage: error,
+            alertIcon: 'error',
+            showConfirmButton: true,
+            ruta: '/home',
+
+        });
+    }
+    file.mv(pathFileTmp, async err =>{
+        if(err) return res.status(500).send({ message : err });
+        const validateDocument = await AditionalInfo.validate(req.body.document)
+        if (!validateDocument){
+            const upload = await s3Upload(file.data,Date.now().toString()+'_'+file.name);
+            if (!upload){
+                returnError('No fue posible procesar el archivo!!!')
+                return
+            }else{
+                fs.unlink(pathFileTmp, (err) => {
+                    if (err){
+                      return Logguer.log(err);
+                    }
+                        Logguer.info('Se borro el archivo temporal '+ pathFileTmp)
+                })
+            }
+            let data = req.body;
+            data.document_file = upload;
+            data.userId = user._id;
+            let saveData = await AditionalInfo.createOne(data);
+            if (saveData){
                 res.render('home',{
                     title:'Home',
                     user:req.user,
                     validatedAcount:req.validatedAcount,
                     alert:true,
-                    alertTitle: '!!!Error!!!',
-                    alertMessage: 'Ocurrio un error al guardar sus datos, compruebe su documento de identidad u otrta informacion, si su documento ya esta registrado en otra cuenta no prodra realizar esta accion',
-                    alertIcon: 'error',
+                    alertTitle: '!!!Exito!!!',
+                    alertMessage: 'Gracias por registrar sus datos',
+                    alertIcon: 'success',
                     showConfirmButton: true,
                     ruta: '/home',
         
                 });
+            }else{
+                returnError('Ocurrio un error al guardar sus datos, compruebe su documento de identidad u otrta informacion, si su documento ya esta registrado en otra cuenta no prodra realizar esta accion')
             }
         }else{
-            res.render('home',{
-                title:'Home',
-                user:req.user,
-                validatedAcount:req.validatedAcount,
-                alert:true,
-                alertTitle: '!!!Error!!!',
-                alertMessage: 'El documentop de identidad ya se encuentra registrado!!!',
-                alertIcon: 'error',
-                showConfirmButton: true,
-                ruta: '/home',
-    
-            });
-        }
-    });
-
+            returnError('El documento de identidad ya se encuentra registrado!!!')
+        };
+    });*/
 };
 
 module.exports.payIndex = async (req,res) => {
@@ -224,6 +407,7 @@ module.exports.payConfirm = async (req,res) => {
 };
 
 module.exports.changePassword = async (req,res) => {
+    Logguer.log(req.body)
     res.render('changePassword',{user:req.user,validatedAcount:req.validatedAcount,alert:false })
 };
 
