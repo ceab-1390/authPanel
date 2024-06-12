@@ -8,14 +8,14 @@ class Logguer{
         return console.log(log);
     };
     info(info){
-        if (level === 'info' || level === 'warn' || level === 'error' ){
+        if (level === 'info' || level === 'warn' || level === 'error' || level === 'debug'){
             return console.info(info);
         }else{
             return;
         }
     };   
     warn(warning) {
-        if (level === 'warn' || level === 'error' ){
+        if (level === 'warn' || level === 'error' || level === 'debug'){
             return console.warn(warning);
         }else{
             return;
@@ -29,7 +29,7 @@ class Logguer{
         }
     };
     debug(debug){
-        if (level === 'error' || level === 'debug' ){
+        if (level === 'debug' ){
             return console.debug(debug);
         }else{
             return;

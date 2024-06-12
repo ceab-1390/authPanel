@@ -1,5 +1,6 @@
-require('dotenv').config;
-const {User,AditionalInfo} = require('../models/userModel');
+require('dotenv').config();
+const {User,AditionalInfo,Tokens} = require('../models/userModel');
+const Pay = require('../models/models');
 const Bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const views = '../views/'
@@ -7,6 +8,7 @@ const Logguer = require('../logger/logger');
 const {s3Upload,manageFile} = require('./filesManage');
 const fs = require('fs');
 const {formidable} = require('formidable');
+const sendMail = require('./mailController');
 
 
 let formData = {
@@ -26,6 +28,10 @@ module.exports.logIn = async (req,res) => {
         if (req.user.provider === 'google'){
             Logguer.log(req.user._json.email)
             const userLogin = await User.findOne(req.user._json.email).then((U)=>{
+                Logguer.debug(U)
+                if(U == null){
+                    res.redirect('/');
+                }
                 const token = jwt.sign({id: U._id, user: U.user}, process.env.SECRET, { expiresIn: '1d' });
                 res.status(200).cookie('authToken',token ).redirect('/home');
             })
@@ -191,6 +197,8 @@ module.exports.finishRegister = async (req,res) => {
             data.phone = fields.phone[0];
             data.email = fields.email[0];
             data.userId = user._id;
+            data.tokenMail = await jwt.sign({id: data.userId, mail: data.email}, process.env.SECRET, { expiresIn: '5d' });
+            Logguer.debug(data.tokenMail)
             const validateDocument = await AditionalInfo.validate(data.document);
             if (!validateDocument){
                 const filesManage = await manageFile(files.document_file[0]);
@@ -199,6 +207,10 @@ module.exports.finishRegister = async (req,res) => {
                     return returnError('Ocurrio un error al intentar subir el archivo!!!');
                 }else{
                     data.document_file = upload;
+                    let mailData = {}
+                    mailData.to = data.email;
+                    mailData.tokenMail = data.tokenMail
+                    sendMail.sendMailVerification(mailData);
                     let saveData = await AditionalInfo.createOne(data);
                     if (saveData){
                         res.render('home',{
@@ -207,7 +219,7 @@ module.exports.finishRegister = async (req,res) => {
                             validatedAcount:req.validatedAcount,
                             alert:true,
                             alertTitle: '!!!Exito!!!',
-                            alertMessage: 'Gracias por registrar sus datos',
+                            alertMessage: 'Enviaremos un correo a la direccion: '+data.email+ ' Por favor ingresa a la bandeja de entrada y verifica tu correo',
                             alertIcon: 'success',
                             showConfirmButton: true,
                             ruta: '/home',
@@ -218,7 +230,11 @@ module.exports.finishRegister = async (req,res) => {
                     }
                     }
             }else{
-             returnError('El documento de identidad ya se encuentra registrado!!!') 
+                let mailData = {}
+                mailData.to = data.email;
+                mailData.tokenMail = data.tokenMail
+                sendMail.sendMailVerification(mailData);
+                returnError('El documento de identidad ya se encuentra registrado!!!') 
             }
         } catch (error) {
             const regex = /options\.maxTotalFileSize \(\d+ bytes\) exceeded, received (\d+) bytes of file data/;
@@ -230,180 +246,50 @@ module.exports.finishRegister = async (req,res) => {
             }
             Logguer.error(error)
         }
-
-
-
-        // const validateDocument = await AditionalInfo.validate(data.document);
-        // if (!validateDocument){
-        //     const filesManage = await manageFile(files.document_file[0]);
-        //     const upload = await s3Upload(filesManage.fileStream,filesManage.name);
-        //     Logguer.log(upload)
-        // }else{
-        //     returnError('El documento de identidad ya se encuentra registrado!!!') 
-        // }
-
-    /*let datos = await req[0]
-    Logguer.log(datos)
-    let user = await User.findOne(req.user.user);
-    function returnError(error){
-        res.render('home',{
-            title:'Home',
-            user:req.user,
-            validatedAcount:req.validatedAcount,
-            alert:true,
-            alertTitle: '!!!Error!!!',
-            alertMessage: error,
-            alertIcon: 'error',
-            showConfirmButton: true,
-            ruta: '/home',
-
-        });
-    }
-    const validateDocument = await AditionalInfo.validate(req.body.document);
-    /*if (!validateDocument){
-        try {
-            const file = await manageFile(req);
-            const upload = await s3Upload(file.fileStream,file.name);
-            console.log(upload);
-            if (!upload){
-                return returnError('Ocurrio un error al intentar subir el archivo!!!');
-            }else{
-                let data = {}
-                Logguer.log(file.fields)
-                data.document = file.fields.document[0];
-                data.phone = file.fields.phone[0];
-                data.document_file = upload;
-                data.userId = user._id;
-                let saveData = await AditionalInfo.createOne(data);
-                if (saveData){
-                    res.render('home',{
-                        title:'Home',
-                        user:req.user,
-                        validatedAcount:req.validatedAcount,
-                        alert:true,
-                        alertTitle: '!!!Exito!!!',
-                        alertMessage: 'Gracias por registrar sus datos',
-                        alertIcon: 'success',
-                        showConfirmButton: true,
-                        ruta: '/home',
-            
-                    });
-                }else{
-                    returnError('Ocurrio un error al guardar sus datos, compruebe su documento de identidad u otrta informacion, si su documento ya esta registrado en otra cuenta no prodra realizar esta accion')
-                }
-            }
-        } catch (error) {
-            Logguer.error(error);
-            return returnError('No fue posible procesar el archivo!!!');
-        }
-    }else{
-        returnError('El documento de identidad ya se encuentra registrado!!!')
-    }*/
-
-    /*const validateDocument = await AditionalInfo.validate(req.body.document);
-    if (!validateDocument){
-        const file = await manageFile(req).then(async (sta) =>{
-            data.document_file = sta;
-            data.userId = user._id;
-            let saveData = await AditionalInfo.createOne(data);
-            if (saveData){
-                res.render('home',{
-                    title:'Home',
-                    user:req.user,
-                    validatedAcount:req.validatedAcount,
-                    alert:true,
-                    alertTitle: '!!!Exito!!!',
-                    alertMessage: 'Gracias por registrar sus datos',
-                    alertIcon: 'success',
-                    showConfirmButton: true,
-                    ruta: '/home',
-        
-                });
-            }else{
-                returnError('Ocurrio un error al guardar sus datos, compruebe su documento de identidad u otrta informacion, si su documento ya esta registrado en otra cuenta no prodra realizar esta accion')
-            }
-        }).catch(err =>{
-            Logguer.log('Luego aqui')
-            Logguer.error(err);
-            return returnError('No fue posible procesar el archivo!!!')
-        })
-    }else{
-        returnError('El documento de identidad ya se encuentra registrado!!!')
-    };*/
-  
-    
-    /*let file = req.files.document_file;
-    if (file.size * 10 * 1024){
-        Logguer.log('archivo muy grande')
-    }
-    let pathFileTmp = '/tmp/'+Date.now().toString()+'_'+file.name
-    console.log(file)*/
-
-    /*function returnError(error){
-        res.render('home',{
-            title:'Home',
-            user:req.user,
-            validatedAcount:req.validatedAcount,
-            alert:true,
-            alertTitle: '!!!Error!!!',
-            alertMessage: error,
-            alertIcon: 'error',
-            showConfirmButton: true,
-            ruta: '/home',
-
-        });
-    }
-    file.mv(pathFileTmp, async err =>{
-        if(err) return res.status(500).send({ message : err });
-        const validateDocument = await AditionalInfo.validate(req.body.document)
-        if (!validateDocument){
-            const upload = await s3Upload(file.data,Date.now().toString()+'_'+file.name);
-            if (!upload){
-                returnError('No fue posible procesar el archivo!!!')
-                return
-            }else{
-                fs.unlink(pathFileTmp, (err) => {
-                    if (err){
-                      return Logguer.log(err);
-                    }
-                        Logguer.info('Se borro el archivo temporal '+ pathFileTmp)
-                })
-            }
-            let data = req.body;
-            data.document_file = upload;
-            data.userId = user._id;
-            let saveData = await AditionalInfo.createOne(data);
-            if (saveData){
-                res.render('home',{
-                    title:'Home',
-                    user:req.user,
-                    validatedAcount:req.validatedAcount,
-                    alert:true,
-                    alertTitle: '!!!Exito!!!',
-                    alertMessage: 'Gracias por registrar sus datos',
-                    alertIcon: 'success',
-                    showConfirmButton: true,
-                    ruta: '/home',
-        
-                });
-            }else{
-                returnError('Ocurrio un error al guardar sus datos, compruebe su documento de identidad u otrta informacion, si su documento ya esta registrado en otra cuenta no prodra realizar esta accion')
-            }
-        }else{
-            returnError('El documento de identidad ya se encuentra registrado!!!')
-        };
-    });*/
 };
 
 module.exports.payIndex = async (req,res) => {
     const userRegister = await User.findOne(req.user.user);
-    res.render('completedPayForm',{user:req.user,validatedAcount:req.validatedAcount,formData,alert:false,userRegister:userRegister.user});
+    res.render('completedPayForm',{user:req.user,validatedAcount:req.validatedAcount,alert:false,userRegister:userRegister.user});
 };
 
 module.exports.payConfirm = async (req,res) => {
     const userRegister = await User.findOne(req.user.user);
-    Logguer.log(req.body)
-    //res.render('completedPayForm',{user:req.user,validatedAcount:req.validatedAcount,formData,alert:false,userRegister:userRegister.user});
+    let data = req.body;
+    data.userId = userRegister._id;
+    function returnError(error){
+        res.render('completedPayForm',{
+            title:'Home',
+            user:req.user,
+            validatedAcount:req.validatedAcount,
+            alert:true,
+            alertTitle: '!!!Error!!!',
+            alertMessage: error,
+            alertIcon: 'error',
+            showConfirmButton: true,
+            ruta: '/perfil/pay',
+            userRegister:userRegister.user
+        });
+    }
+    const validate = await Pay.validOne(data.reference,data.phone);
+    if (!validate){
+        const newPay = await Pay.createOne(data);
+        if (newPay){
+            res.render('completedPayForm',{
+                user:req.user,
+                validatedAcount:req.validatedAcount,
+                alert:true,
+                alertTitle: '!!!Exito!!!',
+                alertMessage: 'Gracias, su pago fue recibido, sera verificado por nuestro personal y le comunicaremos vie correo!',
+                alertIcon: 'success',
+                showConfirmButton: true,
+                ruta: '/perfil/pay',
+                userRegister:userRegister.user
+            });
+        }
+    }else{
+        returnError('Pago ya registrado, este pago no es valido!!!')
+    }
 };
 
 module.exports.changePassword = async (req,res) => {
@@ -415,3 +301,33 @@ module.exports.logOut = (req,res) =>{
     req.session.destroy();
     res.status(200).clearCookie('authToken').redirect('/');
 };
+
+module.exports.validateMail = async (req,res) =>{
+    const mailToken = req.params.tokenMail
+    const decoded = jwt.verify(mailToken, process.env.SECRET);
+    const user = await User.findOne(decoded.mail);
+    const validToken = await Tokens.validate(mailToken);
+    if (!validToken){
+        if(!user.validMail){
+            const validMail = await User.verifiedMail(decoded.id);
+            if (validMail){
+                let data = {};
+                data.token = mailToken;
+                data.userId = decoded.id;
+                const usedToken = await Tokens.createOne(data);
+                if(usedToken){
+                    Logguer.debug('Token guardado: '+usedToken);
+                }else{
+                    Logguer.error('Error al guardar el token');
+                }
+                res.render('mailValid',{layout:false})
+            }else{
+                Logguer.error('No se logro actualizar el estado del email')
+            }
+        }else(
+            res.redirect('/home')
+        )
+    }else{
+        res.status(401).json({info:"El token que intenta usar ya fue utilizado o expiro!!!", login: process.env.URL})
+    }   
+}

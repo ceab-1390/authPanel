@@ -61,3 +61,37 @@ module.exports.loguedIn = async (req,res,next) => {
     }
 
 }
+
+module.exports.isAdmin = async (req,res,next) => {
+    const token = req.cookies.authToken;
+    if (!token) {
+        return res.status(401).render('backoffice/login',{
+                    alert:true,
+                    alertTitle: 'Advertneccia',
+                    alertMessage: 'No autorizado, por favor inicie sesion',
+                    alertIcon: 'error',
+                    showConfirmButton: true,
+                    ruta: 'backOffice',
+                    layout: false
+        });
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.SECRET);
+        const validUser = await User.findOne(decoded.user);
+        if (validUser.id === decoded.id && validUser.superUser){
+            req.user = {}//validUser.user;
+            req.user.user = validUser.user;
+            req.user.name = validUser.name;
+            req.user.lastname = validUser.lastname;
+            req.validatedAcount = validUser.validatedAcount;
+            req.superUser = validUser.superUser;
+            next();
+        }else{
+            return res.status(401).redirect('/backOffice')
+        }    
+    } catch (error) {
+        //res.status(403).json({ success: false, error: 'Token inválido' });
+        return res.status(403).redirect('/backOffice')
+    }
+
+}

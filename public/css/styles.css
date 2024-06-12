@@ -14,3 +14,8 @@
     width: 300px !important;
     height: 300px !important;
 }
+
+.client-img {
+    width: 300px !important;
+    height: auto !important; 
+}

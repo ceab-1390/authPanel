@@ -31,10 +31,17 @@
                         </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="referencia" id="referencia" placeholder="00001234" pattern="\d{4,20}" required>
+                        <input type="text" class="form-control" name="reference" id="reference" placeholder="00001234" pattern="\d{4,20}" required>
                         <label for="floatingInput">Codigo de Referencia</label>
                         <div class="invalid-feedback">
                         Ej: 12345678
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="amount" id="amount" placeholder="40,00" pattern="[\d,]{4,20}" required>
+                        <label for="floatingInput">Codigo de Referencia</label>
+                        <div class="invalid-feedback">
+                        Ej: 40,50
                         </div>
                     </div>
                     <button class="btn btn-success btn-login text-uppercase fw-bold mt-2" type="submit">Guardar</button>

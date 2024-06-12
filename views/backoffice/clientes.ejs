@@ -1,0 +1,38 @@
+
+<div class="">
+    <table class="table table-bordered table-hover">
+        <tbody>
+            <%clients.forEach(client =>{%>
+                <tr data-widget="expandable-table" aria-expanded="false">
+                    <td>
+                        <%=client.user%> 
+                        <span class= "badge <%= client.validatedAcount ? 'bg-success' : 'bg-danger' %>">
+                            <%= client.validatedAcount  ? "Perfil completado" : "Perfil no completado" %>
+                        </span>
+                    </td>
+                </tr>
+                <tr class="expandable-body">
+                    <td>
+                        <p>
+                            <ul class="">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <li class="nav-item">Nombre: <%=client.name%></li>
+                                        <li class="nav-item">Apellido: <%=client.lastname%></li>
+                                        <li class="nav-item">Cedula: <%=client.info? client.info.document : ''%></li>
+                                        <li class="nav-item"><a class="btn btn-primary" type="button">Activar cuenta</a></li>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <li class="nav-item"><a href="/showDocument/<%=client.user%>"><img class="client-img" src="<%=client.info ? client.info.document_file : '/public/img/User.png' %>" alt="/public/img/User.png"></a></li>
+                                    </div>
+                                </div>
+                          
+                            </ul>
+                        </p>
+                    </td>
+                </tr>
+            <%})%>
+            
+        </tbody>
+      </table>
+</div>

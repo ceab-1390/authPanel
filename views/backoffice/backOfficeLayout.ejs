@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/styles.css">
     <title>Sitios</title>
 </head>
-<body onload="progress('<%=validatedAcount%>')">
+<body>
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white bg-green-glass navbar-light">
@@ -92,9 +92,9 @@
         <aside class="main-sidebar sidebar-white-primary bg-green-glass elevation-4">
             <!-- Brand Logo -->
             <div class="brand-link d-flex justify-content-between align-items-center">
-                <a class="brand-link" href="/home">
+                <a class="brand-link" href="#">
                     <img src="/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3">
-                    <span class="brand-text font-weight-light">Sitios</span>
+                    <span class="brand-text font-weight-light">Administracion</span>
                 </a>
                 <a class="pushmenu" data-widget="pushmenu" href="#" role="button"><i class="bi bi-list"></i></a>
             </div>
@@ -107,7 +107,7 @@
                         <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block"><%=user.name%></a>
+                        <a href="#" class="d-block">...</a>
                     </div>
                 </div>
                 <form class="form-inline">
@@ -123,51 +123,35 @@
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-                        <%if (Number(validatedAcount) ===  2){%>
                         <li class="nav-item menu-close">
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon bi bi-folder"></i>
                                 <p>
-                                    Mis Sitios
+                                    Clientes
                                     <i class="right bi bi-caret-left"></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
-                                        <i class="bi bi-plus-circle nav-icon"></i>
-                                        <p>Crear Sitio</p>
+                                        <i class="bi bi-eye nav-icon"></i>
+                                        <p>Clientes de pago</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/backoffice/clientsFree" class="nav-link">
+                                        <i class="bi bi-eye nav-icon"></i>
+                                        <p>Clientes gratuitos</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
-                                        <i class="bi bi-eye nav-icon"></i>
-                                        <p>Ver mis sitios</p>
+                                        <i class="bi bi-plus-circle nav-icon"></i>
+                                        <p>Validar cuenta cliente</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        <%}else if (Number(validatedAcount) === 1){%>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" onclick="exec_pay()">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                Realizar pago
-                                <span class="right badge badge-danger">New</span>
-                            </p>
-                            </a>
-                        </li>
-                        <%}else if (Number(validatedAcount) === 0){%>
-                        <li class="nav-item">
-                            <a href="/perfil/register" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                Terminar registro
-                                <span class="right badge badge-danger">New</span>
-                            </p>
-                            </a>
-                        </li>
-                        <%}%>
                         <li class="nav-item">
                             <a class="nav-link active" href="/perfil/changePassword">
                                 <p>
@@ -185,21 +169,6 @@
         <!-- Contenido principal dentro de.content-wrapper -->
         <div class="content-wrapper">
             <section class="content-header ">
-                <%if (Number(validatedAcount) !=  2){%>
-                <div class="info-box shadow-lg-lte rounded-3">
-                    <span class="info-box-icon bg-success"><i class="bi bi-<%=validatedAcount + 1%>-circle"></i></span>
-                    <div class="info-box-content">
-                      <span class="info-box-text">Su registro esta casi completo</span>
-                      <span class="info-box-number">PASO <%=validatedAcount + 1%></span>
-                      <div class="progress">
-                        <div class="progress-bar bg-success" id="progress" role="progressbar" style="width: 0%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <span class="progress-description">
-                        <a id="progress-info">...</a>
-                      </span>
-                    </div>
-                  </div>
-                <%}%>
             </section>
 
             <section class="content">
@@ -207,9 +176,7 @@
             </section>
         </div>
     </div>
-
     <script src="/js/sweetalert2.all.min.js"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/dist/js/adminlte.js"></script>
     <script src="/public/js/functions.js"></script>

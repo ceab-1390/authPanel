@@ -1,5 +1,5 @@
-const { mongo, default: mongoose,Schema } = require('mongoose');
-require('./db');
+const { mongo, default: mongoose,Schema } = require('./db');
+const logguer = require('../logger/logger');
 
 
 const AditionalInfoSchema = new mongoose.Schema({
@@ -72,18 +72,6 @@ const UserSchema = new mongoose.Schema({
         required: true,
         default: false 
     },
-    /*validateStatus:{
-        type: Number,
-        unique: false,
-        required: true,
-        default: 1 
-    },
-    validatedAcount: {
-        type: Boolean,
-        unique: false,
-        required: true,
-        default: false 
-    },*/
     validatedAcount: {
         type: Number,
         unique: false,
@@ -94,6 +82,12 @@ const UserSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         required: false,
         ref: aditionalInfoModel,
+    },
+    validMail:{
+        type: Boolean,
+        unique: false,
+        required: true,
+        default: false 
     }
 },{
     timestamps: true
@@ -103,10 +97,30 @@ const UserSchema = new mongoose.Schema({
 
 const UserModel = new mongoose.model("User", UserSchema);
 
+const tokensSchema = new mongoose.Schema({
+    token: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+    userId:{
+        type: Schema.Types.ObjectId,
+        required: false,
+        ref: UserModel,
+    },
+
+},{
+    timestamps: true
+},{
+    collection: "tokens"
+});
+
+const TokenModel = new mongoose.model("Tokens", tokensSchema);
+
 class User {
     static async getAll(){
         try {
-            const users = await UserModel.find();
+            const users = await UserModel.find().populate('info');
             return users;
         } catch (error) {
             console.error(new Error('Error al buscar la informacion en la base de datos: '+error))
@@ -118,7 +132,8 @@ class User {
             newUser.save()
             return newUser
         } catch (error) {
-            console.error(new Error('Error al guardar la informacion en la base de datos: '+error))
+            logguer.error('Error al guardar la informacion en la base de datos: '+error);
+            return false;
         }
     };
     static async validate(U){
@@ -152,10 +167,28 @@ class User {
                   }  
                 },
             )
+            return true
         } catch (error) {
             console.error(error);
+            return false;
         }
-    }
+    };
+    static async verifiedMail(id){
+        try {
+            const verified = await UserModel.updateOne(
+                {_id:id},
+                {
+                  $set:{
+                    validMail: true
+                    }  
+                },
+            );
+            return true
+        } catch (error) {
+            logguer.error(error);
+            return false
+        }
+    };
 };
 
 class AditionalInfo{
@@ -184,9 +217,36 @@ class AditionalInfo{
             return false;
         }
     };
+};
+
+class Tokens {
+    static async createOne(data){
+        try {
+            const newData = await TokenModel(data)
+            await newData.save()
+            return newData
+        } catch (error) {
+            logguer.error(error)
+            return false;
+        }
+    };
+    static async validate(token){
+        try {
+            const validToken = await TokenModel.findOne({token: token});
+            if (validToken){
+                return true;
+            }
+            return false;
+        } catch (error) {
+            logguer.error(error)
+            return false
+        }
+    };
 }
 
-module.exports = {User,AditionalInfo}
+
+
+module.exports = {User,AditionalInfo,Tokens,UserModel}
 
 // async function testing(){
 //     let user = await User.findOne('dani@local.com');

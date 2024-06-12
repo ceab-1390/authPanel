@@ -36,7 +36,11 @@ try {
         const userfind = await User.validate(data.user);
         if (!userfind){
           const newUser = await User.createOne(data);
-          Logguer.info('nuevo usuario de google creado');
+          if(newUser){
+            Logguer.info('nuevo usuario de google creado');
+          }else{
+            Logguer.error('No se creo el usuario');
+          }
         }
         return done(null, userProfile);
       } catch (error) {

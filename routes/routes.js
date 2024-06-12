@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const homeController = require ('../controllers/homeController');
+const backofficeController = require('../controllers/backOfficeController');
 const auth = require('../midleware/auth');
 const midleware = require('../midleware/general');
 const googleAuth = require('../controllers/googleAuth');
@@ -19,6 +20,7 @@ router.get('/auth/google', passport.authenticate('google', { scope : ['profile',
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/error' }), userController.logIn)
 router.get('/perfil/register',auth.loguedIn,midleware.isRegister,userController.completedRegister);
 router.post('/perfil/register',auth.loguedIn,userController.finishRegister);
+router.get('/perfil/validateMail/:tokenMail',userController.validateMail)
 router.get('/perfil/pay',auth.loguedIn,userController.payIndex);
 router.post('/perfil/pay',auth.loguedIn,userController.payConfirm);
 //router.get('/perfil/changePassword',auth.loguedIn,midleware.provider,userController.changePassword)
@@ -27,6 +29,14 @@ router.post('/perfil/changePassword',auth.loguedIn,midleware.provider,userContro
 
 //sitios
 router.get('/sitios',auth.loguedIn,homeController.sitios);
+
+
+//backoffice
+router.get('/backoffice',backofficeController.login);
+router.post('/backoffice/login',backofficeController.auth);
+router.get('/backoffice/home',auth.isAdmin,backofficeController.index);
+router.get('/backoffice/clientsFree',auth.isAdmin,backofficeController.clientsFree);
+router.get('/showDocument/:img',auth.isAdmin,backofficeController.showDocument)
 
 //router.get('/success',userController.googleSuccess);
 
