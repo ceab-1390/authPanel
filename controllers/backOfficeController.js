@@ -1,6 +1,6 @@
 require('dotenv').config();
 const {User,AditionalInfo,Tokens} = require('../models/userModel');
-const Pay = require('../models/models');
+const {Pay} = require('../models/models');
 const Bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Logguer = require('../logger/logger');
@@ -81,14 +81,36 @@ module.exports.index = async (req,res) =>{
 };
 
 module.exports.clientsFree = async (req,res) => {
-    const clients = await User.getAll();
-    //Logguer.debug(clients)
-    res.render('backoffice/clientes',{layout:'backoffice/backOfficeLayout',alert:false,clients:clients});
+    let page = req.params.page;
+    let limit = 10; 
+    if (Number(page) <= 0 ){
+        page = 1
+    }
+    const clients = await User.getAll(page,limit);
+    if (clients.length == 0){
+        res.render('backoffice/clientes',{
+            layout:'backoffice/backOfficeLayout',
+            alert:true,
+            alertIcon: 'error',
+            alertTitle: '!!!Ups!!!',
+            alertMessage: 'No hay mas paginas que mostrar',
+            ruta: '1',
+            clients:clients,
+            totalPages:clients.totalPages,
+            page
+        });
+        return
+    }else{
+        Logguer.debug(page);
+        Logguer.debug(clients.totalPages)
+        res.render('backoffice/clientes',{layout:'backoffice/backOfficeLayout',alert:false,clients:clients,totalPages:clients.totalPages,page});
+    }
+    
 }
 
-module.exports.showDocument = async (req,res) => {
+/*module.exports.showDocument = async (req,res) => {
     let img = req.params.img
     img = await User.findOne(img);
     img.info ? img = img.info.document_file :  img = '/public/img/User.png';
     res.render('backoffice/blank',{layout:'backoffice/backOfficeLayout',alert:false, img})
-}
+}*/

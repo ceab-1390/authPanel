@@ -5,9 +5,23 @@
             <%clients.forEach(client =>{%>
                 <tr data-widget="expandable-table" aria-expanded="false">
                     <td>
-                        <%=client.user%> 
+                        <span class="badge">
+                            <%=client.user%> 
+                        </span>
                         <span class= "badge <%= client.validatedAcount ? 'bg-success' : 'bg-danger' %>">
                             <%= client.validatedAcount  ? "Perfil completado" : "Perfil no completado" %>
+                        </span>
+                        <span class= "badge <%= client.validMail ? 'bg-success' : 'bg-danger' %>">
+                            <%= client.validMail  ? "Correo validado" : "Correo no validado" %>
+                        </span>
+                        <span class= "badge <%= client.lastPay ? 'bg-success' : 'bg-danger' %>">
+                            <%= client.lastPay  ? "Pago registrado" : "Pago no registrado" %>
+                        </span>
+                        <span class= "badge <%= client.validatedAcount == 2 ? 'bg-success' : 'bg-danger' %>">
+                            <%= client.validatedAcount == 2  ? "Cuenta activa" : "Cuenta no activa" %>
+                        </span>
+                        <span class= "badge">
+                            <%= client.createdAt%>
                         </span>
                     </td>
                 </tr>
@@ -16,14 +30,24 @@
                         <p>
                             <ul class="">
                                 <div class="row">
-                                    <div class="col-sm-5">
-                                        <li class="nav-item">Nombre: <%=client.name%></li>
-                                        <li class="nav-item">Apellido: <%=client.lastname%></li>
-                                        <li class="nav-item">Cedula: <%=client.info? client.info.document : ''%></li>
+                                    <div class="col-sm-2">
+                                        <h5>Datos del cliente</h3>
+                                        <li class="nav-item">Nombre: <span class="text-bold"><%=client.name%></span></li>
+                                        <li class="nav-item">Apellido: <span class="text-bold"><%=client.lastname%></span></li>
+                                        <li class="nav-item">Cedula: <span class="text-bold"><%=client.info? client.info.document : ''%></span></li>
                                         <li class="nav-item"><a class="btn btn-primary" type="button">Activar cuenta</a></li>
                                     </div>
-                                    <div class="col-sm-5">
-                                        <li class="nav-item"><a href="/showDocument/<%=client.user%>"><img class="client-img" src="<%=client.info ? client.info.document_file : '/public/img/User.png' %>" alt="/public/img/User.png"></a></li>
+                                    <div class="col-sm-4">
+                                        <li class="nav-item"><a type="button" id="<%=client._id%>" ><img class="client-img" src="<%=client.info ? client.info.document_file : '/public/img/User.png' %>" alt="/public/img/User.png"></a></li>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <h5>Ultimo pago</h5>
+                                        <%if (client.lastPay){%>
+                                        <li class="nav-item">Cedula: <span class="text-bold"><%=client.lastPay.document%></span></li>
+                                        <li class="nav-item">Telefono: <span class="text-bold"><%=client.lastPay.phone%></span></li>
+                                        <li class="nav-item">Referencia:  <span class="text-bold"><%=client.lastPay.reference%></span></li>
+                                        <li class="nav-item">Monto:  <span class="text-bold"><%=client.lastPay.amount%></span></li>
+                                        <%}%>
                                     </div>
                                 </div>
                           
@@ -31,8 +55,25 @@
                         </p>
                     </td>
                 </tr>
+                <!-- Modal de imagen -->
+                <div class="modal fade" id="<%=client._id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                            <img  src="<%=client.info ? client.info.document_file : '/public/img/User.png' %>" alt="/public/img/User.png">
+                    </div>
+                    </div>
+                </div>
             <%})%>
             
         </tbody>
-      </table>
+    </table>
+    <nav aria-label="Clientes">
+        <ul class="pagination">
+          <li class="page-item"><a class="page-link" href="<%=Number(page) - 1 <= 0 ? 1 : Number(page) - 1 %>">Anterior</a></li>
+          <li class="page-item"><a class="page-link" href="<%=totalPages%>"><%=totalPages%></a></li>
+          <li class="page-item"><a class="page-link" href="<%=Number(page) + 1 >= Number(totalPages) ? totalPages : Number(page) + 1%>">Siguiente</a></li>
+        </ul>
+      </nav>
 </div>
+
+

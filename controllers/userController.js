@@ -1,6 +1,6 @@
 require('dotenv').config();
 const {User,AditionalInfo,Tokens} = require('../models/userModel');
-const Pay = require('../models/models');
+const {Pay,InfoPay} = require('../models/models');
 const Bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const views = '../views/'
@@ -202,7 +202,7 @@ module.exports.finishRegister = async (req,res) => {
             const validateDocument = await AditionalInfo.validate(data.document);
             if (!validateDocument){
                 const filesManage = await manageFile(files.document_file[0]);
-                const upload = await s3Upload(filesManage.fileStream,filesManage.name);
+                const upload = await s3Upload(filesManage.fileStream,filesManage.name,filesManage.path);
                 if (!upload){
                     return returnError('Ocurrio un error al intentar subir el archivo!!!');
                 }else{
@@ -256,7 +256,7 @@ module.exports.payIndex = async (req,res) => {
 module.exports.payConfirm = async (req,res) => {
     const userRegister = await User.findOne(req.user.user);
     let data = req.body;
-    data.userId = userRegister._id;
+    data.username = req.user.user;
     function returnError(error){
         res.render('completedPayForm',{
             title:'Home',
@@ -274,6 +274,12 @@ module.exports.payConfirm = async (req,res) => {
     const validate = await Pay.validOne(data.reference,data.phone);
     if (!validate){
         const newPay = await Pay.createOne(data);
+        const lastPay = await User.updatePay(req.user.user,newPay._id)
+        if (!lastPay){
+            Logguer.error('No se actuaalizo el pago para: '+req.user.user)
+        }else{
+            Logguer.debug('Pago actualizado para: '+req.user.user)
+        }
         if (newPay){
             res.render('completedPayForm',{
                 user:req.user,

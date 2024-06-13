@@ -13,7 +13,7 @@ AWS.config.update({
 const s3 = new AWS.S3();
 
 
-async function s3Upload(path,name){
+async function s3Upload(path,name,ruta){
     const params = {
         Bucket: process.env.S3_BUCKET,
         Key: name, 
@@ -22,9 +22,11 @@ async function s3Upload(path,name){
     }
     try {
         const result = await s3.upload(params).promise();
+        deleteFileTemp(ruta);
         return result.Location  
     } catch (error) {
         Logguer.error(error);
+        deleteFileTemp(ruta);
         return false;
     }
 
@@ -38,12 +40,24 @@ async function manageFile(file){
         const extend = path.extname(file.originalFilename);
         data.name = file.newFilename + extend
         data.fileStream = fs.createReadStream(file.filepath);
+        data.path = file.filepath;
         return data 
     } catch (error) {
         Logguer.error(error);
         return false;
     }
 
+};
+
+function deleteFileTemp(path){
+    fs.unlink(path, (err)=>{
+        if (err){
+            Logguer.error(err);
+            return;
+        }else{
+            Logguer.debug('Archivo: '+path+' borrado')
+        }
+    })
 }
 
 

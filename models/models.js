@@ -1,6 +1,6 @@
 const { mongo, default: mongoose,Schema } = require('./db');
 const Logguer = require('../logger/logger');
-const {UserModel} = require('./userModel');
+//const {User} = require('./userModel');
 
 const paySchema = new mongoose.Schema({
     document: {
@@ -23,10 +23,10 @@ const paySchema = new mongoose.Schema({
         unique: false,
         required: true,
     },
-    userId:{
-        type: Schema.Types.ObjectId,
+    username:{
+        type: String,
         required: true,
-        ref: UserModel
+        unique: false
     },
 },{
     timestamps: true
@@ -35,6 +35,46 @@ const paySchema = new mongoose.Schema({
 } );
 
 const PayModel = new mongoose.model("pays",paySchema);
+
+/*const payUsersInfoSchema = new mongoose.Schema({
+    userId:{
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: UserModel
+    },
+    payId:{
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: PayModel
+    },
+    expirate: {
+        type: String,
+        unique: false,
+        required: true,
+        default: '123'
+    },
+},{
+    timestamps: true
+},{
+    collection: "paysUsersInfo"
+});
+
+const PayUsersInfoModel = new mongoose.model("payUsersInfo",payUsersInfoSchema);
+
+
+class InfoPay{
+    static async createOne(data){
+        try {
+            Logguer.log(data)
+            const newData = await PayUsersInfoModel(data)
+            await newData.save()
+            return newData
+        } catch (error) {
+            Logguer.error(error)
+            return false;
+        }
+    }; 
+};*/
 
 class Pay{
     static async createOne(data){
@@ -51,6 +91,10 @@ class Pay{
         try {
             const validPay = await PayModel.findOne({reference: pay}).populate('userId');
             if (validPay){
+                let data = {}
+                //data.userId = validPay.userId;
+                //data.payId = validPay._id;
+                //await InfoPay.createOne(data)
                 return validPay;
             }
             return false;
@@ -77,6 +121,8 @@ class Pay{
             return true
         }
     };
-}
 
-module.exports = Pay
+};
+
+
+module.exports = {Pay,PayModel}

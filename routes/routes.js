@@ -35,8 +35,8 @@ router.get('/sitios',auth.loguedIn,homeController.sitios);
 router.get('/backoffice',backofficeController.login);
 router.post('/backoffice/login',backofficeController.auth);
 router.get('/backoffice/home',auth.isAdmin,backofficeController.index);
-router.get('/backoffice/clientsFree',auth.isAdmin,backofficeController.clientsFree);
-router.get('/showDocument/:img',auth.isAdmin,backofficeController.showDocument)
+router.get('/backoffice/clientsFree/:page',auth.isAdmin,backofficeController.clientsFree);
+//router.get('/showDocument/:img',auth.isAdmin,backofficeController.showDocument)
 
 //router.get('/success',userController.googleSuccess);
 

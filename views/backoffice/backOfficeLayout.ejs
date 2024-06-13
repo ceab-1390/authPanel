@@ -133,34 +133,22 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="/backoffice/clientsFree/1" class="nav-link">
                                         <i class="bi bi-eye nav-icon"></i>
-                                        <p>Clientes de pago</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/backoffice/clientsFree" class="nav-link">
-                                        <i class="bi bi-eye nav-icon"></i>
-                                        <p>Clientes gratuitos</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="bi bi-plus-circle nav-icon"></i>
-                                        <p>Validar cuenta cliente</p>
+                                        <p>Ver clientes</p>
                                     </a>
                                 </li>
                             </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/perfil/changePassword">
-                                <p>
-                                    Cambio de clave
-                                </p>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/perfil/changePassword">
+                                    <p>
+                                        Cambio de clave
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 <!-- /.sidebar-menu -->
             </div>
             <!-- /.sidebar -->
@@ -180,6 +168,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/dist/js/adminlte.js"></script>
     <script src="/public/js/functions.js"></script>
+    <script src="/js/bootstrap.js"></script>
     <% if(alert){ %>
         <script>
           Swal.fire({
@@ -192,5 +181,28 @@
           })
         </script>
     <% } %>
+
+<!-- jQuery y Bootstrap 3 JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+$(document).ready(function () {
+    // Selecciona todos los enlaces con type="button"
+    $('a[type="button"]').each(function() {
+        // Guarda el ID del modal correspondiente en una variable
+        var modalId = $(this).attr('id');
+
+        // Asigna un manejador de eventos de clic a cada enlace
+        $(this).click(function(e) {
+            // Previene el comportamiento predeterminado del enlace
+            e.preventDefault();
+
+            // Muestra el modal correspondiente
+            $('#' + modalId).modal('show');
+        });
+    });
+});
+</script>
+
 </body>
 </html>

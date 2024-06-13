@@ -1,5 +1,7 @@
 const { mongo, default: mongoose,Schema } = require('./db');
 const logguer = require('../logger/logger');
+const {Pay,PayModel} = require('./models');
+//const { use } = require('passport');
 
 
 const AditionalInfoSchema = new mongoose.Schema({
@@ -88,7 +90,12 @@ const UserSchema = new mongoose.Schema({
         unique: false,
         required: true,
         default: false 
-    }
+    },
+    lastPay:{
+        type: Schema.Types.ObjectId,
+        required: false,
+        ref: PayModel,
+    },
 },{
     timestamps: true
 },{
@@ -118,9 +125,17 @@ const tokensSchema = new mongoose.Schema({
 const TokenModel = new mongoose.model("Tokens", tokensSchema);
 
 class User {
-    static async getAll(){
+    static async getAll(page, limit){
         try {
-            const users = await UserModel.find().populate('info');
+            const users = await UserModel.find()
+            .sort({_id:-1})
+            .populate('info')
+            .populate('lastPay')
+            .skip((page - 1) * limit)
+            .limit(limit);
+            const totalUsers = await UserModel.countDocuments();
+            const totalPages = Math.ceil(totalUsers / limit);
+            users.totalPages = totalPages;
             return users;
         } catch (error) {
             console.error(new Error('Error al buscar la informacion en la base de datos: '+error))
@@ -150,7 +165,7 @@ class User {
     };
     static async findOne(U){
         try {
-            const user = await UserModel.findOne({user: U}).populate('info');;
+            const user = await UserModel.findOne({user: U}).populate('info').populate('lastPay');
             return user
         } catch (error) {
             console.error(new Error('Error al buscar la informacion en la base de datos: '+error))
@@ -173,6 +188,22 @@ class User {
             return false;
         }
     };
+    static async updatePay(user,data){
+        try {
+            let update = await UserModel.updateOne(
+                {user:user},
+                {
+                  $set:{
+                    lastPay: data
+                  }  
+                },
+            )
+            return true
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    };
     static async verifiedMail(id){
         try {
             const verified = await UserModel.updateOne(
@@ -186,6 +217,84 @@ class User {
             return true
         } catch (error) {
             logguer.error(error);
+            return false
+        }
+    };
+    static async getAllWhitPay(){
+        try {
+            const pipeline = [
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        lastname: 1,
+                        user: 1,
+                        password: 1,
+                        provider: 1,
+                        superUser: 1,
+                        validatedAccount: 1,
+                        validMail: 1,
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "pays",
+                        localField: "_id",
+                        foreignField: "userId",
+                        as: "payments"
+                    }
+                },
+                {
+                    $unwind: "$payments"
+                },
+                {
+                    $sort: {
+                        "payments.date": -1
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        payments: {
+                            $push: "$payments"
+                        },
+                        name: { $first: "$name" }, // Agrega 'name' aquí
+                        lastname: { $first: "$lastname" }, // Agrega 'lastname' aquí
+                        user: { $first: "$user" }, // Agrega 'user' aquí
+                        provider: { $first: "$provider" }, // Agrega 'provider' aquí
+                        superUser: { $first: "$superUser" }, // Agrega 'superUser' aquí
+                        validatedAccount: { $first: "$validatedAccount" }, // Agrega 'validatedAccount' aquí
+                        validMail: { $first: "$validMail" } // Agrega 'validMail' aquí
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "aditional_info_users",
+                        localField: "info",
+                        foreignField: "_id",
+                        as: "info"
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        lastname: 1,
+                        user: 1,
+                        password: 1,
+                        provider: 1,
+                        superUser: 1,
+                        validatedAccount: 1,
+                        info: 1,
+                        validMail: 1,
+                        payments: 1
+                    }
+                }
+            ];
+            const usersWithPayments = await UserModel.aggregate(pipeline);
+            return usersWithPayments;
+        } catch (error) {
+            logguer.error(new Error('Error al buscar la informacion en la base de datos: '+error))
             return false
         }
     };
@@ -248,9 +357,13 @@ class Tokens {
 
 module.exports = {User,AditionalInfo,Tokens,UserModel}
 
-// async function testing(){
-//     let user = await User.findOne('dani@local.com');
-//     console.log(user)
-// }
+async function test(){
+let users = await User.getAllWhitPay()
+//logguer.debug(users[0].info)
+users.forEach(element => {
+    //logguer.log(element.user +' '+ element.payments[0].amount)
+    console.log(element.user+' '+element.payments[0].amount);
+});
+}
 
-// testing()
+test()
