@@ -1,3 +1,4 @@
+
 (function () {
     'use strict'
       console.log("funcion cargada")
@@ -54,4 +55,43 @@ function exec_pay(){
   }).then(()=>{
     window.location = '/perfil/pay'
   })
+}
+
+function activateClient(id,client,status){
+  if (Number(status) == 2){
+    Swal.fire({
+      icon: 'info',
+      title: 'Cuenta activa',
+      text: 'Cliente: '+client,
+    })
+  }else{
+    Swal.fire({
+      icon: 'info',
+      title: 'Se activara la cuenta:',
+      text: 'Cliente: '+client,
+      showCancelButton: true,
+      showConfirmButton: true,
+    }).then((result)=>{
+      if(result.isConfirmed){
+        console.log(client)
+        const URL = '/backoffice/clientsFree/activate/'
+        fetch(URL,{
+          method: 'POST',
+          body: JSON.stringify({
+            client: id
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        }).then(response=>{
+          return response.json();
+        }).then((data)=>{
+          console.log(data)
+        }).catch((err)=>{
+          console.error(err)
+        });
+      }
+      location.reload()
+    })
+  }
 }

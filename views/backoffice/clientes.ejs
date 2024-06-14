@@ -35,10 +35,10 @@
                                         <li class="nav-item">Nombre: <span class="text-bold"><%=client.name%></span></li>
                                         <li class="nav-item">Apellido: <span class="text-bold"><%=client.lastname%></span></li>
                                         <li class="nav-item">Cedula: <span class="text-bold"><%=client.info? client.info.document : ''%></span></li>
-                                        <li class="nav-item"><a class="btn btn-primary" type="button">Activar cuenta</a></li>
+                                        <li class="nav-item"><a class="btn btn-primary" id="<%=client._id%>" type="button" onclick="activateClient(id,'<%=client.user%>','<%=client.validatedAcount%>')">Activar cuenta</a></li>
                                     </div>
                                     <div class="col-sm-4">
-                                        <li class="nav-item"><a type="button" id="<%=client._id%>" ><img class="client-img" src="<%=client.info ? client.info.document_file : '/public/img/User.png' %>" alt="/public/img/User.png"></a></li>
+                                        <li class="nav-item"><a type="button" class="modaltrigger" id="Modal_<%=client._id%>" ><img class="client-img" src="<%=client.info ? client.info.document_file : '/public/img/User.png' %>" alt="/public/img/User.png"></a></li>
                                     </div>
                                     <div class="col-sm-3">
                                         <h5>Ultimo pago</h5>
@@ -56,7 +56,7 @@
                     </td>
                 </tr>
                 <!-- Modal de imagen -->
-                <div class="modal fade" id="<%=client._id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal fade" id="Modal_<%=client._id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content">
                             <img  src="<%=client.info ? client.info.document_file : '/public/img/User.png' %>" alt="/public/img/User.png">

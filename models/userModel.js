@@ -298,6 +298,22 @@ class User {
             return false
         }
     };
+    static async activateOne(id){
+        try {
+            let update = await UserModel.updateOne(
+                {_id:id},
+                {
+                  $set:{
+                    validatedAcount: 2
+                  }  
+                },
+            )
+            return true
+        } catch (error) {
+            logguer.error(error);
+            return false;
+        }
+    };
 };
 
 class AditionalInfo{

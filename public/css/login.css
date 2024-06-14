@@ -5,7 +5,7 @@ html, body {
   
 body::before {
     content: "" !important;
-    background: url('/public/img/backGroundLogin.png') !important;
+    background: url('/public/img/backGroundL2.png') !important;
     background-repeat: no-repeat !important;
     background-position: center !important;
     background-size: cover !important;

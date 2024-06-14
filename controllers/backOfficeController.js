@@ -11,7 +11,6 @@ module.exports.login = (req,res) =>{
 }
 
 module.exports.auth = async (req,res) =>{
-    Logguer.debug(req.body);
     if (Object.keys(req.body).length === 0){
         if (req.user.provider === 'google'){
             Logguer.log(req.user._json.email)
@@ -91,7 +90,7 @@ module.exports.clientsFree = async (req,res) => {
         res.render('backoffice/clientes',{
             layout:'backoffice/backOfficeLayout',
             alert:true,
-            alertIcon: 'error',
+            alertIcon: 'warning',
             alertTitle: '!!!Ups!!!',
             alertMessage: 'No hay mas paginas que mostrar',
             ruta: '1',
@@ -101,11 +100,22 @@ module.exports.clientsFree = async (req,res) => {
         });
         return
     }else{
-        Logguer.debug(page);
-        Logguer.debug(clients.totalPages)
         res.render('backoffice/clientes',{layout:'backoffice/backOfficeLayout',alert:false,clients:clients,totalPages:clients.totalPages,page});
     }
     
+};
+
+module.exports.activateClient = async (req,res) =>{
+    let id = req.body.client;
+    Logguer.log(id)
+    const activate = await User.activateOne(id);
+    if (activate){
+        res.status(200).json({status:true});
+        Logguer.debug('Se activo la cuenta: '+id)
+    }else{
+        res.status(200).json({status:false});
+        Logguer.info('No se activo la cuenta por algun error')
+    }
 }
 
 /*module.exports.showDocument = async (req,res) => {
