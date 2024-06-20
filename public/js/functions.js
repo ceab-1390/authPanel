@@ -91,8 +91,8 @@ function activateClient(id,client,status){
           console.error(err)
         });
       }
-      location.reload()
-    })
+    });
+    location.reload()
   }
 }
 
@@ -100,7 +100,7 @@ function activateClient(id,client,status){
 if(location.pathname === '/perfil/register'){
   let div_progress = document.getElementById('divProgress');
   let progressBar = document.getElementById('progressFile');
-  webSocket = new WebSocket('ws://127.0.0.1:8002');
+  webSocket = new WebSocket('ws://directorios.solutecvzla.com:8002');
   const sessionCookie = document.cookie.replace(/(?:(?:^|.*;\s*)wsId\s*\=\s*([^;]*).*$)|^.*$/, "$1");
   const id = decodeURIComponent(sessionCookie);
    webSocket.onopen = () =>{

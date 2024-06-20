@@ -18,7 +18,7 @@ module.exports.sendMailVerification =async (data) =>{
         from: 'no-reply',
         to: data.to,
         subject: 'Bienvenido a Sitios, por favor verifique su correo',
-        text: 'En el siguiente en lace podra verificar su correo: http://localhost:8001/perfil/validateMail/'+data.tokenMail
+        text: 'En el siguiente en lace podra verificar su correo: http://directorios.solutecvzla.com/perfil/validateMail/'+data.tokenMail
     };
     try {
         let info = await transporter.sendMail(mailOptions);
