@@ -31,10 +31,62 @@ const paySchema = new mongoose.Schema({
 },{
     timestamps: true
 },{
-    collection: "pays"
+    collection: "cms_pays"
 } );
 
-const PayModel = new mongoose.model("pays",paySchema);
+const PayModel = new mongoose.model("cms_pays",paySchema);
+
+const userAppSchema = new mongoose.Schema({
+    correo: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+    password: {
+        type: String,
+        unique: false,
+        required: true,
+    },
+    admin: {
+        type: String,
+        unique: false,
+        required: true,
+        default: 'Si',
+    },
+    nombre: {
+        type: String,
+        unique: false,
+        required: true,
+    },
+    numero:{
+        type: String,
+        unique: false,
+        required: false,
+    },
+    publico: {
+        type: String,
+        unique: false,
+        required: true,
+        default: 'Si'
+    },
+    tipo: {
+        type: String,
+        unique: false,
+        required: false,
+    },
+    urllogoTipo:{
+        type: String,
+        unique: false,
+        required: false,
+    },
+    
+},{
+    timestamps: false
+},{
+    collection: "Usuarios"
+});
+
+const UserAppModel = new mongoose.model("Usuarios",userAppSchema,"Usuarios");
 
 /*const payUsersInfoSchema = new mongoose.Schema({
     userId:{
@@ -124,5 +176,28 @@ class Pay{
 
 };
 
+class UserApp {
+    static async createOne(data){
+        try {
+            const newData = await UserAppModel(data)
+            await newData.save()
+            return newData
+        } catch (error) {
+            Logguer.error(error)
+            return false;
+        }
+    };
 
-module.exports = {Pay,PayModel}
+    static async findOne(mail){
+        try {
+            const user = await UserAppModel.findOne({correo:mail});
+            return user;
+        } catch (error) {
+            Logguer.error(error);
+            return false; 
+        }
+    }
+}
+
+
+module.exports = {Pay,PayModel,UserApp}

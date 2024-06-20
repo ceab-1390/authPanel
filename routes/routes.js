@@ -8,6 +8,7 @@ const auth = require('../midleware/auth');
 const midleware = require('../midleware/general');
 const googleAuth = require('../controllers/googleAuth');
 const passport = require('passport');
+const apiController = require('../controllers/api/apiAuthController');
 
 
 router.get('/',userController.index);
@@ -40,5 +41,7 @@ router.post('/backoffice/clientsFree/activate/',auth.isAdmin,backofficeControlle
 //router.get('/showDocument/:img',auth.isAdmin,backofficeController.showDocument)
 
 //router.get('/success',userController.googleSuccess);
+
+router.post('/api/auth',apiController.auth);
 
 module.exports = router

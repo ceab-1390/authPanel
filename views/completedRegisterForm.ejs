@@ -1,7 +1,12 @@
     
     <div class="card shadow-lg-lte rounded-3 card-outline card-success">
       <div class="card-body p-4 p-sm-5">
-        <h5 class="card-title text-center mb-5 fw-light fs-5">Completa tu Registro</h5>
+            <h5 class="text-center mb-2 fw-light fs-5">Completa tu Registro</h5>
+            <div class="col mb-4">
+              <div class="progress mt-3 d-none" id="divProgress">
+                <div class="progress-bar bg-success " id="progressFile" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>
+              </div>
+            </div>
         <form action="/perfil/register" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
           <div class="form-floating mb-3">
             <input type="text" class="form-control" name="document" id="name" placeholder="Numero de documento" pattern="\d{6,9}" required>

@@ -1,10 +1,10 @@
 require('dotenv').config();
 const {User,AditionalInfo,Tokens} = require('../models/userModel');
-const {Pay} = require('../models/models');
+const {Pay,UserApp} = require('../models/models');
 const Bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Logguer = require('../logger/logger');
-
+const sendMail = require('./mailController');
 
 module.exports.login = (req,res) =>{
     res.render('backoffice/login',{layout:false,alert:false});
@@ -107,14 +107,28 @@ module.exports.clientsFree = async (req,res) => {
 
 module.exports.activateClient = async (req,res) =>{
     let id = req.body.client;
-    Logguer.log(id)
+    Logguer.debug(id)
+    const user = await User.findOneId(id);
     const activate = await User.activateOne(id);
     if (activate){
-        res.status(200).json({status:true});
-        Logguer.debug('Se activo la cuenta: '+id)
+        let data = {};
+        data.correo = user.user;
+        data.nombre = user.name +' '+user.lastname ? user.lastname : '';
+        data.numero = user.info ? user.info.phone : '';
+        data.passwordPlain = Math.random().toString(36).substring(2, 10);
+        data.password = Bcrypt.hashSync(data.passwordPlain,10);
+        const userApp = await UserApp.createOne(data)
+        if(userApp){
+            sendMail.sendMailActivate(data);
+            res.status(200).json({status:true});
+            Logguer.debug('Se activo la cuenta: '+id);
+        }else{
+            res.status(200).json({status:false});
+            Logguer.info('No se activo la cuenta por algun error 1')
+        }
     }else{
         res.status(200).json({status:false});
-        Logguer.info('No se activo la cuenta por algun error')
+        Logguer.info('No se activo la cuenta por algun error 2')
     }
 }
 

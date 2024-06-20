@@ -29,10 +29,10 @@ const AditionalInfoSchema = new mongoose.Schema({
 },{
     timestamps: true
 },{
-    collection: "aditional_info_users"
+    collection: "cms_aditional_info_users"
 });
 
-const aditionalInfoModel = new mongoose.model("Aditional_info_users",AditionalInfoSchema);
+const aditionalInfoModel = new mongoose.model("cms_aditional_info_users",AditionalInfoSchema);
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -99,10 +99,10 @@ const UserSchema = new mongoose.Schema({
 },{
     timestamps: true
 },{
-    collection: "users"
+    collection: "cms_users"
 } );
 
-const UserModel = new mongoose.model("User", UserSchema);
+const UserModel = new mongoose.model("cms_users", UserSchema);
 
 const tokensSchema = new mongoose.Schema({
     token: {
@@ -119,10 +119,10 @@ const tokensSchema = new mongoose.Schema({
 },{
     timestamps: true
 },{
-    collection: "tokens"
+    collection: "cms_tokens"
 });
 
-const TokenModel = new mongoose.model("Tokens", tokensSchema);
+const TokenModel = new mongoose.model("cms_tokens", tokensSchema);
 
 class User {
     static async getAll(page, limit){
@@ -169,6 +169,15 @@ class User {
             return user
         } catch (error) {
             console.error(new Error('Error al buscar la informacion en la base de datos: '+error))
+        }
+    };
+    static async findOneId(id){
+        try {
+            const user = await UserModel.findOne({_id: id}).populate('info');
+            return user
+        } catch (error) {
+            logguer.error(error);
+            return false;
         }
     };
     static async updateInfo(id,data){

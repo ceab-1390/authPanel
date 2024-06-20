@@ -6,10 +6,11 @@ const jwt = require('jsonwebtoken');
 const views = '../views/'
 const Logguer = require('../logger/logger');
 const {s3Upload,manageFile} = require('./filesManage');
-const fs = require('fs');
+//const fs = require('fs');
 const {formidable} = require('formidable');
 const sendMail = require('./mailController');
-
+const {clients} = require('./wsController');
+const {v4: uuidv4} = require('uuid');
 
 let formData = {
     name: '',
@@ -156,7 +157,7 @@ module.exports.registerOne = async (req,res) => {
 
 module.exports.completedRegister = async (req,res) => {
     const userRegister = await User.findOne(req.user.user);
-     
+    res.cookie('wsId',userRegister.user);
     res.render('completedRegisterForm',{user:req.user,validatedAcount:req.validatedAcount,formData,alert:false,userRegister:userRegister.user});
 };
 
@@ -178,9 +179,24 @@ module.exports.finishRegister = async (req,res) => {
         }
         let options = {
             maxFileSize: 10 * 1024 * 1024,
-            allowEmptyFile: false
+            allowEmptyFile: false,
+            /*filter: function(name, file) {
+                const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf', '.gif'];
+                console.log('filter')
+                return allowedExtensions.includes(extension);
+            }*/
         };
         const form = formidable(options);
+        form.on('progress',(recived,expected)=>{
+            let id = user.user;
+            clients[id].send((recived / expected) * 100 );
+            Logguer.log((recived / expected) * 100 )
+        });
+        form.on('end',()=>{
+            let id = user.user;
+            clients[id].send('finish');
+            Logguer.debug('Carga finalizada')
+        })
         try {
             const result = await new Promise((resolve,reject) => {
                 form.parse(req,async (err, fields, files) => {
@@ -245,7 +261,9 @@ module.exports.finishRegister = async (req,res) => {
                 returnError('Ocurrio un error al subir sus datos')
             }
             Logguer.error(error)
-        }
+        };
+
+
 };
 
 module.exports.payIndex = async (req,res) => {

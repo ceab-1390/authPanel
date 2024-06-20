@@ -94,7 +94,7 @@
             <div class="brand-link d-flex justify-content-between align-items-center">
                 <a class="brand-link" href="/home">
                     <img src="/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3">
-                    <span class="brand-text font-weight-light">Sitios</span>
+                    <span class="brand-text font-weight-light text-title-sidebar">Sitios</span>
                 </a>
                 <a class="pushmenu" data-widget="pushmenu" href="#" role="button"><i class="bi bi-list"></i></a>
             </div>
@@ -107,7 +107,7 @@
                         <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block"><%=user.name%></a>
+                        <a href="#" class="d-block"><p class="text-sidebar"><%=user.name%></p></a>
                     </div>
                 </div>
                 <form class="form-inline">
@@ -127,7 +127,7 @@
                         <li class="nav-item menu-close">
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon bi bi-folder"></i>
-                                <p>
+                                <p class="text-sidebar">
                                     Mis Sitios
                                     <i class="right bi bi-caret-left"></i>
                                 </p>
@@ -136,13 +136,13 @@
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
                                         <i class="bi bi-plus-circle nav-icon"></i>
-                                        <p>Crear Sitio</p>
+                                        <p class="text-sidebar">Crear Sitio</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
                                         <i class="bi bi-eye nav-icon"></i>
-                                        <p>Ver mis sitios</p>
+                                        <p class="text-sidebar">Ver mis sitios</p>
                                     </a>
                                 </li>
                             </ul>
@@ -151,7 +151,7 @@
                         <li class="nav-item">
                             <a href="#" class="nav-link" onclick="exec_pay()">
                             <i class="nav-icon fas fa-th"></i>
-                            <p>
+                            <p class="text-sidebar">
                                 Realizar pago
                                 <span class="right badge badge-danger">New</span>
                             </p>
@@ -161,7 +161,7 @@
                         <li class="nav-item">
                             <a href="/perfil/register" class="nav-link">
                             <i class="nav-icon fas fa-th"></i>
-                            <p>
+                            <p class="text-sidebar">
                                 Terminar registro
                                 <span class="right badge badge-danger">New</span>
                             </p>
@@ -186,19 +186,19 @@
         <div class="content-wrapper">
             <section class="content-header ">
                 <%if (Number(validatedAcount) !=  2){%>
-                <div class="info-box shadow-lg-lte rounded-3">
-                    <span class="info-box-icon bg-success"><i class="bi bi-<%=validatedAcount + 1%>-circle"></i></span>
-                    <div class="info-box-content">
-                      <span class="info-box-text">Su registro esta casi completo</span>
-                      <span class="info-box-number">PASO <%=validatedAcount + 1%></span>
-                      <div class="progress">
-                        <div class="progress-bar bg-success" id="progress" role="progressbar" style="width: 0%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <span class="progress-description">
-                        <a id="progress-info">...</a>
-                      </span>
+                    <div class="info-box shadow-lg-lte rounded-3">
+                        <span class="info-box-icon bg-success"><i class="bi bi-<%=validatedAcount + 1%>-circle"></i></span>
+                        <div class="info-box-content">
+                        <span class="info-box-text">Su registro esta casi completo</span>
+                        <span class="info-box-number">PASO <%=validatedAcount + 1%></span>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" id="progress" role="progressbar" style="width: 0%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span class="progress-description">
+                            <a id="progress-info">...</a>
+                        </span>
+                        </div>
                     </div>
-                  </div>
                 <%}%>
             </section>
 

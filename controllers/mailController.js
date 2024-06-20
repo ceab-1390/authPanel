@@ -30,3 +30,21 @@ module.exports.sendMailVerification =async (data) =>{
     }
 
 }
+
+module.exports.sendMailActivate =async (data) =>{
+    const mailOptions = {
+        from: 'no-reply',
+        to: data.correo,
+        subject: 'Bienvenido a Sitios, estas seran sus credenciales para ingresar mediante la app android',
+        text: 'Por favor guarde sus credenciales en un lugar seguro:\n\n Usuario: '+data.correo+' \n\nPassword: '+data.passwordPlain
+    };
+    try {
+        let info = await transporter.sendMail(mailOptions);
+        Logguer.debug(info)
+        return true;
+    } catch (error) {
+        Logguer.error(error);
+        return false
+    }
+
+}

@@ -41,7 +41,7 @@ function progress(sta){
         progress_info.href = '/home'
       break;
     }
-    console.log(progress)
+    //console.log(progress)
   }
 }
 
@@ -93,5 +93,30 @@ function activateClient(id,client,status){
       }
       location.reload()
     })
+  }
+}
+
+
+if(location.pathname === '/perfil/register'){
+  let div_progress = document.getElementById('divProgress');
+  let progressBar = document.getElementById('progressFile');
+  webSocket = new WebSocket('ws://127.0.0.1:8002');
+  const sessionCookie = document.cookie.replace(/(?:(?:^|.*;\s*)wsId\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+  const id = decodeURIComponent(sessionCookie);
+   webSocket.onopen = () =>{
+     let data = {};
+     data.id = id;
+     //data.path = window.location.pathname;
+     webSocket.send(JSON.stringify(data));
+  }
+
+  console.log("Session ID:", id);
+  webSocket.onmessage = (event) =>{
+    div_progress.classList.remove('d-none');
+    console.log(event.data)
+    progressBar.style.width = `${Math.trunc(Number(event.data))}%`
+    if (event.data == 'finish'){
+      div_progress.classList.add('d-none');
+    }
   }
 }

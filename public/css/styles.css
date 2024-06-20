@@ -19,3 +19,18 @@
     width: 300px !important;
     height: auto !important; 
 }
+
+.nav-text{
+    list-style-type: none !important;
+}
+
+.text-title-sidebar{
+    font-family:Verdana, Geneva, Tahoma, sans-serif !important;
+    font-weight: bold !important;
+    font-size: x-large !important;
+    color: rgb(94, 94, 94) !important;
+}
+
+.text-sidebar{
+    color: rgb(94, 94, 94) !important;
+}

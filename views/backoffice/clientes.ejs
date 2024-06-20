@@ -32,21 +32,21 @@
                                 <div class="row">
                                     <div class="col-sm-2">
                                         <h5>Datos del cliente</h3>
-                                        <li class="nav-item">Nombre: <span class="text-bold"><%=client.name%></span></li>
-                                        <li class="nav-item">Apellido: <span class="text-bold"><%=client.lastname%></span></li>
-                                        <li class="nav-item">Cedula: <span class="text-bold"><%=client.info? client.info.document : ''%></span></li>
-                                        <li class="nav-item"><a class="btn btn-primary" id="<%=client._id%>" type="button" onclick="activateClient(id,'<%=client.user%>','<%=client.validatedAcount%>')">Activar cuenta</a></li>
+                                        <li class="nav-item nav-text">Nombre: <span class="text-bold"><%=client.name%></span></li>
+                                        <li class="nav-item nav-text">Apellido: <span class="text-bold"><%=client.lastname%></span></li>
+                                        <li class="nav-item nav-text">Cedula: <span class="text-bold"><%=client.info? client.info.document : ''%></span></li>
+                                        <li class="nav-item nav-text"><a class="btn btn-primary" id="<%=client._id%>" type="button" onclick="activateClient(id,'<%=client.user%>','<%=client.validatedAcount%>')">Activar cuenta</a></li>
                                     </div>
                                     <div class="col-sm-4">
-                                        <li class="nav-item"><a type="button" class="modaltrigger" id="Modal_<%=client._id%>" ><img class="client-img" src="<%=client.info ? client.info.document_file : '/public/img/User.png' %>" alt="/public/img/User.png"></a></li>
+                                        <li class="nav-item nav-text"><a type="button" class="modaltrigger" id="Modal_<%=client._id%>" ><img class="client-img" src="<%=client.info ? client.info.document_file : '/public/img/User.png' %>" alt="/public/img/User.png"></a></li>
                                     </div>
                                     <div class="col-sm-3">
                                         <h5>Ultimo pago</h5>
                                         <%if (client.lastPay){%>
-                                        <li class="nav-item">Cedula: <span class="text-bold"><%=client.lastPay.document%></span></li>
-                                        <li class="nav-item">Telefono: <span class="text-bold"><%=client.lastPay.phone%></span></li>
-                                        <li class="nav-item">Referencia:  <span class="text-bold"><%=client.lastPay.reference%></span></li>
-                                        <li class="nav-item">Monto:  <span class="text-bold"><%=client.lastPay.amount%></span></li>
+                                        <li class="nav-item nav-text">Cedula: <span class="text-bold"><%=client.lastPay.document%></span></li>
+                                        <li class="nav-item nav-text">Telefono: <span class="text-bold"><%=client.lastPay.phone%></span></li>
+                                        <li class="nav-item nav-text">Referencia:  <span class="text-bold"><%=client.lastPay.reference%></span></li>
+                                        <li class="nav-item nav-text">Monto:  <span class="text-bold"><%=client.lastPay.amount%></span></li>
                                         <%}%>
                                     </div>
                                 </div>
