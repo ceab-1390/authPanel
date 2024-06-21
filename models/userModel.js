@@ -68,12 +68,6 @@ const UserSchema = new mongoose.Schema({
         trim: true,
         default: 'local' 
     },
-    superUser: {
-        type: Boolean,
-        unique: false,
-        required: true,
-        default: false 
-    },
     validatedAcount: {
         type: Number,
         unique: false,
