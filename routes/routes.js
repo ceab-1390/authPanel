@@ -15,7 +15,7 @@ router.get('/',userController.index);
 router.post('/login',userController.logIn);
 router.get('/register',userController.register);
 router.post('/register',userController.registerOne);
-router.get('/logout',auth.loguedIn ,userController.logOut)
+router.get('/logout',auth.loguedIn ,userController.logOut);
 router.get('/home',auth.loguedIn ,homeController.index);
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/error' }), userController.logIn)
@@ -38,6 +38,8 @@ router.post('/backoffice/login',backofficeController.auth);
 router.get('/backoffice/home',auth.isAdmin,backofficeController.index);
 router.get('/backoffice/clientsFree/:page',auth.isAdmin,backofficeController.clientsFree);
 router.post('/backoffice/clientsFree/activate/',auth.isAdmin,backofficeController.activateClient);
+router.get('/backoffice/logout',auth.isAdmin ,backofficeController.logOut);
+
 //router.get('/showDocument/:img',auth.isAdmin,backofficeController.showDocument)
 
 //router.get('/success',userController.googleSuccess);

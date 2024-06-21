@@ -88,6 +88,48 @@ const userAppSchema = new mongoose.Schema({
 
 const UserAppModel = new mongoose.model("Usuarios",userAppSchema,"Usuarios");
 
+
+
+const userBackOfficeSchema = new mongoose.Schema({
+    user: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+    password: {
+        type: String,
+        unique: false,
+        required: true,
+    },
+    admin: {
+        type: Number,
+        unique: false,
+        required: true,
+        default: 1,
+    },
+    name: {
+        type: String,
+        unique: false,
+        required: true,
+    },
+    lastname:{
+        type: String,
+        unique: false,
+        required: false,
+    },
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+},{
+    timestamps: false
+},{
+    collection: "backOfficeUsers"
+});
+
+const BackOfficeUsersModel = new mongoose.model("bacOfficeUsers",userBackOfficeSchema);
+
 /*const payUsersInfoSchema = new mongoose.Schema({
     userId:{
         type: Schema.Types.ObjectId,
@@ -197,7 +239,63 @@ class UserApp {
             return false; 
         }
     }
-}
+};
+
+class UserBackoffice {
+    static async createOne(data){
+        try {
+            const newData = await BackOfficeUsersModel(data)
+            await newData.save()
+            return newData
+        } catch (error) {
+            Logguer.error(error)
+            return false;
+        }
+    };
+
+    static async find(){
+        try {
+            const users = await BackOfficeUsersModel.find();
+            return users;
+        } catch (error) {
+            Logguer.error(error);
+            return false; 
+        }
+    };
+
+    static async findOneId(id){
+        try {
+            const user = await BackOfficeUsersModel.findOne({_id:id});
+            return user;
+        } catch (error) {
+            Logguer.error(error);
+            return false; 
+        }
+    };
+    static async findOneUser(username){
+        try {
+            const user = await BackOfficeUsersModel.findOne({user:username});
+            return user;
+        } catch (error) {
+            Logguer.error(error);
+            return false; 
+        }
+    };
+    
+    static async validate(username){
+        try {
+            const user = await BackOfficeUsersModel.findOne({user:username});
+            if(user){
+                return true; 
+            }else{
+                return false;
+            }
+        } catch (error) {
+            Logguer.error(error);
+            return false; 
+        }
+    };
+};
 
 
-module.exports = {Pay,PayModel,UserApp}
+module.exports = {Pay,PayModel,UserApp,UserBackoffice}

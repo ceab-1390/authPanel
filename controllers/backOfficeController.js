@@ -1,79 +1,51 @@
 require('dotenv').config();
 const {User,AditionalInfo,Tokens} = require('../models/userModel');
-const {Pay,UserApp} = require('../models/models');
+const {Pay,UserApp,UserBackoffice} = require('../models/models');
 const Bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Logguer = require('../logger/logger');
 const sendMail = require('./mailController');
 
 module.exports.login = (req,res) =>{
-    res.render('backoffice/login',{layout:false,alert:false});
+    req.session.destroy();
+    res.clearCookie('backOffice').render('backoffice/login',{layout:false,alert:false});
 }
 
 module.exports.auth = async (req,res) =>{
-    if (Object.keys(req.body).length === 0){
-        if (req.user.provider === 'google'){
-            Logguer.log(req.user._json.email)
-            const userLogin = await User.findOne(req.user._json.email).then((U)=>{
-                Logguer.debug(U)
-                if(U == null){
-                    res.redirect('/');
-                }
-                const token = jwt.sign({id: U._id, user: U.user}, process.env.SECRET, { expiresIn: '1d' });
-                res.status(200).cookie('authToken',token ).redirect('/home');
-            })
-        }
+    function returError(message){
+        res.render('backoffice/login',{
+            alert:true,
+            alertTitle: 'Advertneccia',
+            alertMessage:   message,
+            alertIcon: 'error',
+            showConfirmButton: true,
+            ruta: 'backOffice',
+            layout: false
+        });
+    }
+    if (req.body.user == '' && req.body.password == ''){
+        returError('Debe ingresar el usuario y la clave');
     }else{
-        if (req.body.user == '' && req.body.password == ''){
-            res.render('backoffice/login',{
-                alert:true,
-                alertTitle: 'Advertneccia',
-                alertMessage: 'Debe ingresar los datos',
-                alertIcon: 'error',
-                showConfirmButton: true,
-                ruta: 'backOffice',
-                layout: false
-            });
-    }else{
-            const userLogin = await User.findOne(req.body.user).then((U) =>{
+        const userLogin = await UserBackoffice.findOneUser(req.body.user).then((U) =>{
             if (!U){
-                res.render('backoffice/login',{
-                    alert:true,
-                    alertTitle: 'Advertneccia',
-                    alertMessage: 'Usuario no valido',
-                    alertIcon: 'error',
-                    showConfirmButton: true,
-                    ruta: 'backOffice',
-                    layout: false
-                })
-                req.session.destroy();
-
-                //res.json({success: false, error: 'No exioste el usuario'}).redirect('/');
+                returError('Usuario no valido!!')
+                req.session.destroy()   
             }else{
                 const compare = Bcrypt.compareSync(req.body.password , U.password)
                 if (!compare){
-                    res.render('backoffice/login',{
-                        alert:true,
-                        alertTitle: 'Advertneccia',
-                        alertMessage: 'Clave erronea',
-                        alertIcon: 'error',
-                        showConfirmButton: true,
-                        ruta: 'backOffice',
-                        layout: false
-                    })
+                    returError('Clave erronea');
                 }else{
-                    const token = jwt.sign({id: U._id, user: U.user}, process.env.SECRET, { expiresIn: '1d' });
-                    res.status(200).cookie('authToken',token ).redirect('/backoffice/home');
+                    const token = jwt.sign({id: U._id, user: U.user}, process.env.SECRETBO, { expiresIn: '1d' });
+                    res.status(200).cookie('backOffice',token ).redirect('/backoffice/home');
                 }
             }
         }).catch(err => {
-            Logguer.error(err);
-            req.session.destroy();
+                Logguer.error(err);
+                req.session.destroy();
 
         })
-        }
     }
-}
+};
 
 module.exports.index = async (req,res) =>{
     res.render('backoffice/home',{layout:'backoffice/backOfficeLayout',alert:false})
@@ -130,7 +102,12 @@ module.exports.activateClient = async (req,res) =>{
         res.status(200).json({status:false});
         Logguer.info('No se activo la cuenta por algun error 2')
     }
-}
+};
+
+module.exports.logOut = (req,res) =>{
+    req.session.destroy();
+    res.status(200).clearCookie('backOffice').redirect('/backoffice');
+};
 
 /*module.exports.showDocument = async (req,res) => {
     let img = req.params.img

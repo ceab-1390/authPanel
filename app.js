@@ -7,8 +7,8 @@ const routes = require('./routes/routes')
 const cookieParser = require('cookie-parser');
 const expressLayouts = require('express-ejs-layouts');
 const passport = require('passport');
-const fileUpload = require('express-fileupload');
-
+const newAdmin = require('./controllers/adminUser');
+const Logguer = require('./logger/logger');
 
 app.use(session({
     resave: false,
@@ -19,7 +19,7 @@ app.use(session({
 
 const port = process.env.APP_PORT;
 
-console.log('views', __dirname + '/views/')
+Logguer.debug('views', __dirname + '/views/')
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressLayouts)
@@ -47,6 +47,8 @@ app.use('/dist',express.static(__dirname + '/node_modules/admin-lte/dist'));
 app.use(routes);
 
 
-app.listen(port, ()=>{
-    console.log('App is running')
+app.listen(port, async ()=>{
+    Logguer.info('App is running');
+    const admin = await newAdmin.runNewUser();
+    Logguer.debug(admin);
 })

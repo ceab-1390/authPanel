@@ -1,6 +1,7 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken');
-const {User} = require('../models/userModel')
+const {User} = require('../models/userModel');
+const {UserBackoffice} = require('../models/models');
 
 
 
@@ -63,7 +64,7 @@ module.exports.loguedIn = async (req,res,next) => {
 }
 
 module.exports.isAdmin = async (req,res,next) => {
-    const token = req.cookies.authToken;
+    const token = req.cookies.backOffice;
     if (!token) {
         return res.status(401).render('backoffice/login',{
                     alert:true,
@@ -76,9 +77,9 @@ module.exports.isAdmin = async (req,res,next) => {
         });
     }
     try {
-        const decoded = jwt.verify(token, process.env.SECRET);
-        const validUser = await User.findOne(decoded.user);
-        if (validUser.id === decoded.id && validUser.superUser){
+        const decoded = jwt.verify(token, process.env.SECRETBO);
+        const validUser = await UserBackoffice.findOneUser(decoded.user);
+        if (validUser.id === decoded.id && validUser.admin){
             req.user = {}//validUser.user;
             req.user.user = validUser.user;
             req.user.name = validUser.name;
