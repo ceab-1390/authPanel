@@ -90,17 +90,17 @@ function activateClient(id,client,status){
         }).catch((err)=>{
           console.error(err)
         });
-        location.reload()
       }
     });
-  };
+    location.reload()
+  }
 }
 
 
 if(location.pathname === '/perfil/register'){
   let div_progress = document.getElementById('divProgress');
   let progressBar = document.getElementById('progressFile');
-  webSocket = new WebSocket('ws://localhost:8002');
+  webSocket = new WebSocket('ws://directorios.solutecvzla.com:8002');
   const sessionCookie = document.cookie.replace(/(?:(?:^|.*;\s*)wsId\s*\=\s*([^;]*).*$)|^.*$/, "$1");
   const id = decodeURIComponent(sessionCookie);
    webSocket.onopen = () =>{

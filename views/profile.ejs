@@ -1,0 +1,94 @@
+<div class="card mb-3 shadow-lg-lte rounded-3  card-outline card-success table-responsive">
+    <div class="g-0 card-tools">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <h5 class="text-center">Informacion de su perfil</h5>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Cedula</th>
+                    <th>Telefono</th>
+                    <th>Correo</th>
+                    <th>Documento</th>
+                    <th>Acciones</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><%=data.name%></td>
+                        <td><%=data.lastname%></td>
+                        <td><%=data.info ? data.info.document : ''%></td>
+                        <td><%=data.info ? data.info.phone : ''%></td>
+                        <td><%=data.user%> <span class="right badge <%=data.validMail ? 'badge-success' : 'badge-danger' %>"><%=data.validMail ? 'Validado' : 'No validado' %></span></td>
+                        <td><a type="button" class="modaltrigger" id="modaltrigger"><i class="fs-4 bi bi-eye"></i></a></td>
+                        <td><button type="button" id="modalEdit" class="btn btn-sm btn-info">Editar</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de imagen -->
+<div class="modal fade" id="ModalImage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <img src="<%=data.info ? data.info.document_file : '...' %>" alt="..." >
+        </div>
+    </div>
+</div>
+
+<!-- Modal de edicion -->
+<div class="modal fade" id="editProfile" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+    <div class="modal-dialog modal-l" role="document">
+      <div class="modal-content">
+        <div class="container mt-3 mb-3">
+            <form action="/perfil/register" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" name="name" id="name" placeholder="Nombre" pattern="\d{6,9}" required value="<%=data.name%>">
+                  <div class="invalid-feedback">
+                    Ej: Juanito
+                  </div>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" name="lastname" id="phone" placeholder="Apellido" pattern="\d{9,11}" required value="<%=data.lastname ? data.lastname : ''%>">
+                  <div class="invalid-feedback">
+                    Ej: Silva
+                  </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="document" id="document" placeholder="Cedula"  required value="<%=data.info ? data.info.document : ''%>">
+                    <div class="invalid-feedback">
+                       Solo numeros
+                    </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="phone" id="phone" placeholder="Telefono"  required value="<%=data.info ? data.info.phone : ''%>">
+                    <div class="invalid-feedback">
+                       Solo numeros
+                    </div>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" name="email" id="name" placeholder="Correo Electronico"  required value="<%=data.user%>">
+                  <div class="invalid-feedback">
+                     El correo debe estar en etse formato pepito_perez@micorreo.com
+                  </div>
+                </div>
+                <div class="d-grid">
+                  <button class="btn btn-success btn-login text-uppercase fw-bold mt-2" type="submit">Guardar</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+ 
+<script>
+    $(document).ready(function(){
+        $('#modaltrigger').click(function(){
+            $('#ModalImage').modal('show')
+        });
+        $('#modalEdit').click(function(){
+            $('#editProfile').modal('show');
+        });
+    });
+</script>

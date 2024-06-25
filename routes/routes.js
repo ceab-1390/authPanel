@@ -9,6 +9,7 @@ const midleware = require('../midleware/general');
 const googleAuth = require('../controllers/googleAuth');
 const passport = require('passport');
 const apiController = require('../controllers/api/apiAuthController');
+const profileController = require('../controllers/profileController')
 
 
 router.get('/',userController.index);
@@ -19,6 +20,7 @@ router.get('/logout',auth.loguedIn ,userController.logOut);
 router.get('/home',auth.loguedIn ,homeController.index);
 router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/error' }), userController.logIn)
+router.get('/perfil',auth.loguedIn,profileController.index);
 router.get('/perfil/register',auth.loguedIn,midleware.isRegister,userController.completedRegister);
 router.post('/perfil/register',auth.loguedIn,userController.finishRegister);
 router.get('/perfil/validateMail/:tokenMail',userController.validateMail)

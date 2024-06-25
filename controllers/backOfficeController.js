@@ -85,7 +85,8 @@ module.exports.activateClient = async (req,res) =>{
     if (activate){
         let data = {};
         data.correo = user.user;
-        data.nombre = user.name +' '+user.lastname ? user.lastname : '';
+        data.nombre = user.name +' '+(user.lastname ? user.lastname : '');
+        Logguer.debug(data.nombre)
         data.numero = user.info ? user.info.phone : '';
         data.passwordPlain = Math.random().toString(36).substring(2, 10);
         data.password = Bcrypt.hashSync(data.passwordPlain,10);

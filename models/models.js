@@ -221,6 +221,7 @@ class Pay{
 class UserApp {
     static async createOne(data){
         try {
+            Logguer.debug(data)
             const newData = await UserAppModel(data)
             await newData.save()
             return newData
